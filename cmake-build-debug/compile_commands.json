@@ -1,0 +1,14 @@
+[
+{
+  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/cmake-build-debug",
+  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\funcoes.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-Futebol\\funcoes.cpp",
+  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/funcoes.cpp",
+  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/funcoes.cpp.obj"
+},
+{
+  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/cmake-build-debug",
+  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\main.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-Futebol\\main.cpp",
+  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/main.cpp",
+  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-Futebol/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/main.cpp.obj"
+}
+]
