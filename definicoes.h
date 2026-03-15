@@ -4,13 +4,21 @@
 
 #ifndef PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
 #define PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
-
-#include <string>
+using namespace std;
 
 enum Posicao { GR = 0, DEF = 1, MED = 2, AVA = 3 };
 
+struct Equipa {
+    string nome;
+    string* plantel;      // Array dinâmico de jogadores
+    int nJogadores;
+    int pontos;           // Classificação atualizada
+    // Listas de lesionados, transferências, etc.
+};
+
+
 struct Jogador {
-    std::string nome;
+    string nome;
     int numero;
     Posicao pos;
     int idade;
@@ -21,15 +29,21 @@ struct Jogador {
 
 struct Plantel {
     Jogador* jogadores; // Array dinâmico
-    int capacidade;
+    int capacidade;     // Entre 20 e 30
     int totalAtual;
 };
 
-// Protótipos
+// Protótipos das funções
 int gerarAleatorio(int min, int max);
-std::string* carregarNomes(std::string filename, int& totalNomes);
-void inicializarPlantel(Plantel& p, std::string* listaNomes, int totalNomes);
+string* carregarNomes(string filename, int& totalNomes);
+void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes);
+void libertarMemoria(Plantel& p, string* listaNomes);
 void exibirPlantel(const Plantel& p);
-void libertarMemoria(Plantel& p, std::string* listaNomes);
+//Estrutura do campeonato
+int contaEquipas(string f);
+string* carregarEquipas(string f);
+void baralhar(string* equipas, int nEquipas);
+void gerarJornadas(string f,string* equipas);
+
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H

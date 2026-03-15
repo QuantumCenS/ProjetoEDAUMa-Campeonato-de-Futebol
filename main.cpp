@@ -1,3 +1,6 @@
+//
+// Created by Sergio on 3/12/2026.
+//
 #include <iostream>
 #include <ctime>
 #include "definicoes.h"
@@ -21,5 +24,8 @@ int main() {
     exibirPlantel(meuTime);
 
     libertarMemoria(meuTime, bancoDeNomes);
+    string* equipas =carregarEquipas("equipas.txt");
+    gerarJornadas("equipas.txt",equipas);
+    delete[] equipas;
     return 0;
 }
