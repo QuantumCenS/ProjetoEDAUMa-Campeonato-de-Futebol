@@ -8,4 +8,5 @@ include_directories(.)
 add_executable(ProjetoEDAUMa_Campeonato_de_Futebol
         definicoes.h
         funcoes.cpp
-        main.cpp)
+        main.cpp
+        Estrutura_campeonato.cpp)

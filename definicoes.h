@@ -1,24 +1,12 @@
-//
-// Created by Sergio on 3/12/2026.
-//
+#ifndef DEFINICOES_H
+#define DEFINICOES_H
 
-#ifndef PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
-#define PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
-using namespace std;
+#include <string>
 
 enum Posicao { GR = 0, DEF = 1, MED = 2, AVA = 3 };
 
-struct Equipa {
-    string nome;
-    string* plantel;      // Array dinâmico de jogadores
-    int nJogadores;
-    int pontos;           // Classificação atualizada
-    // Listas de lesionados, transferências, etc.
-};
-
-
 struct Jogador {
-    string nome;
+    std::string nome;
     int numero;
     Posicao pos;
     int idade;
@@ -28,22 +16,27 @@ struct Jogador {
 };
 
 struct Plantel {
-    Jogador* jogadores; // Array dinâmico
-    int capacidade;     // Entre 20 e 30
+    Jogador* jogadores;
+    int capacidade;
     int totalAtual;
 };
 
-// Protótipos das funções
+struct Equipa {
+    std::string nome;
+    Plantel plantel;
+    int pontos;
+};
+
+// --- Protótipos Essenciais ---
 int gerarAleatorio(int min, int max);
-string* carregarNomes(string filename, int& totalNomes);
-void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes);
-void libertarMemoria(Plantel& p, string* listaNomes);
-void exibirPlantel(const Plantel& p);
-//Estrutura do campeonato
-int contaEquipas(string f);
-string* carregarEquipas(string f);
-void baralhar(string* equipas, int nEquipas);
-void gerarJornadas(string f,string* equipas);
+std::string* carregarNomes(std::string filename, int& totalNomes);
+void inicializarPlantel(Plantel& p, std::string* listaNomes, int totalNomes);
+void exibirPlantel(const Equipa& e);
+void libertarPlantel(Plantel& p);
 
+// --- Gestão do Campeonato ---
+int contaEquipasFicheiro(std::string f);
+Equipa* criarLiga(std::string fEquipas, std::string* listaNomes, int totalNomes, int& nTotal);
+void gerarCalendarioEDAFC(Equipa* liga, int nTotal);
 
-#endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
+#endif

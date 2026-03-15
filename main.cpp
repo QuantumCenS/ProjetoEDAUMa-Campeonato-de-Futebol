@@ -1,6 +1,3 @@
-//
-// Created by Sergio on 3/12/2026.
-//
 #include <iostream>
 #include <ctime>
 #include "definicoes.h"
@@ -10,22 +7,52 @@ using namespace std;
 int main() {
     srand(time(NULL));
 
-    int totalNomesDisponiveis = 0;
-    string* bancoDeNomes = carregarNomes("nomes.txt", totalNomesDisponiveis);
-
-    if (bancoDeNomes == nullptr) {
-        cout << "Erro crítico: Ficheiro nomes.txt não encontrado!" << endl;
+    int nNomes = 0;
+    string* bancoNomes = carregarNomes("nomes.txt", nNomes);
+    if (!bancoNomes) {
+        cout << "Erro: Nao foi possivel carregar nomes.txt" << endl;
         return 1;
     }
 
-    Plantel meuTime;
-    inicializarPlantel(meuTime, bancoDeNomes, totalNomesDisponiveis);
+    int nEquipasAtivas = 0;
+    // Esta função agora escolhe apenas 17 aleatórias + EDA FC
+    Equipa* liga = criarLiga("equipas.txt", bancoNomes, nNomes, nEquipasAtivas);
 
-    exibirPlantel(meuTime);
+    int opcao;
+    do {
+        cout << "\n========== MENU DO CAMPEONATO ==========\n";
+        cout << "1. Ver Calendario do EDA FC (34 Jornadas)\n";
+        cout << "2. Ver Plantel de uma Equipa (Escolher entre as 18)\n";
+        cout << "0. Sair\n";
+        cout << "Escolha: ";
+        cin >> opcao;
 
-    libertarMemoria(meuTime, bancoDeNomes);
-    string* equipas =carregarEquipas("equipas.txt");
-    gerarJornadas("equipas.txt",equipas);
-    delete[] equipas;
+        if (opcao == 1) {
+            gerarCalendarioEDAFC(liga, nEquipasAtivas);
+        }
+        else if (opcao == 2) {
+            cout << "\n--- LISTA DE EQUIPAS NO CAMPEONATO ---\n";
+            for (int i = 0; i < nEquipasAtivas; i++) {
+                cout << i << ". " << liga[i].nome << endl;
+            }
+            cout << "Escolha o numero da equipa: ";
+            int id;
+            cin >> id;
+
+            if (id >= 0 && id < nEquipasAtivas) {
+                exibirPlantel(liga[id]);
+            } else {
+                cout << "ID Invalido! Escolha entre 0 e " << nEquipasAtivas - 1 << endl;
+            }
+        }
+    } while (opcao != 0);
+
+    // Limpeza de memória
+    for (int i = 0; i < nEquipasAtivas; i++) {
+        libertarPlantel(liga[i].plantel);
+    }
+    delete[] liga;
+    delete[] bancoNomes;
+
     return 0;
 }
