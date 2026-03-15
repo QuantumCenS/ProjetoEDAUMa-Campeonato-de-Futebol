@@ -8,23 +8,24 @@
 using namespace std;
 
 int main() {
-    srand(time(NULL)); // Inicializa a semente aleatória
+    srand(time(NULL));
 
     int totalNomesDisponiveis = 0;
     string* bancoDeNomes = carregarNomes("nomes.txt", totalNomesDisponiveis);
 
-    if (bancoDeNomes == nullptr || totalNomesDisponiveis == 0) {
-        cout << "Erro: Nao foi possivel ler nomes.txt" << endl;
+    if (bancoDeNomes == nullptr) {
+        cout << "Erro crítico: Ficheiro nomes.txt não encontrado!" << endl;
         return 1;
     }
 
-    Plantel meuPlantel;
-    inicializarPlantel(meuPlantel, bancoDeNomes, totalNomesDisponiveis);
+    Plantel meuTime;
+    inicializarPlantel(meuTime, bancoDeNomes, totalNomesDisponiveis);
 
-    exibirPlantel(meuPlantel);
+    exibirPlantel(meuTime);
 
-    // Limpeza de memória obrigatória (arrays dinâmicos)
-    libertarMemoria(meuPlantel, bancoDeNomes);
-
+    libertarMemoria(meuTime, bancoDeNomes);
+    string* equipas =carregarEquipas("equipas.txt");
+    gerarJornadas("equipas.txt",equipas);
+    delete[] equipas;
     return 0;
 }
