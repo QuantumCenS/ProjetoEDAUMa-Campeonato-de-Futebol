@@ -10,9 +10,11 @@ enum Posicao { GR = 0, DEF = 1, MED = 2, AVA = 3 };
 
 struct Equipa {
     string nome;
-    string* plantel;      // Array dinâmico de jogadores
-    int nJogadores;
-    int pontos;           // Classificação atualizada
+    string* plantel= nullptr;   // Array dinâmico de jogadores
+    int nJogadores=0;
+    int pontos=0;   // Classificação atualizada
+    int lesionados=0;
+    int castigados=0;
     // Listas de lesionados, transferências, etc.
 };
 
@@ -43,7 +45,9 @@ void exibirPlantel(const Plantel& p);
 int contaEquipas(string f);
 string* carregarEquipas(string f);
 void baralhar(string* equipas, int nEquipas);
-void gerarJornadas(string f,string* equipas);
+string** gerarJornadas(Equipa e,string f,string* equipas);
+Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas);
+void gerarResultado(Equipa& h, Equipa& a);
 
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H

@@ -68,24 +68,55 @@ void baralhar(string* equipas, int nEquipas ) {
 }
 
 //Gerar Jornadas do campeonato
-void gerarJornadas( string f, string* equipas) {
+string** gerarJornadas( Equipa e ,string f, string* equipas) {
     fstream file(f);
-    int nEquipas=contaEquipas(f);
-    auto **jornadasCasa= new string*[nEquipas];
-    auto **jornadasFora= new string*[nEquipas];
+    int nJornadas =34;
+    int rep=0;
+    int nEquipas=contaEquipas(f); //Se o ficheiro de equipas tiver 50 equipas, substituir este número por 17 ou 18
+    auto **totalJornadas= new string*[nJornadas];
     baralhar(equipas,nEquipas);
     for (int i=0;i<nEquipas;i++) {
-        jornadasCasa[i]=new string[2];
-        jornadasCasa[i][0]="EDA FC";
-        jornadasCasa[i][1]=equipas[i];
-        jornadasFora[i]=new string[2];
-        jornadasFora[i][0]=equipas[i];
-        jornadasFora[i][1]="EDA FC";
-        cout<<jornadasCasa[i][0]<<" - "<<jornadasCasa[i][1]<<endl;
-        cout<<jornadasFora[i][0]<<" - "<<jornadasFora[i][1]<<endl;
-        delete[] jornadasCasa[i];
-        delete[] jornadasFora[i];
+        totalJornadas[i] = new string[2];
+        totalJornadas[i + nEquipas] = new string[2];
+        if (i%2==0) {
+            totalJornadas[i][0]=e.nome;
+            totalJornadas[i][1]=equipas[i];
+
+            totalJornadas[i+nEquipas][0]=equipas[i];
+            totalJornadas[i+nEquipas][1]=e.nome;
+        }
+        else {
+            totalJornadas[i][0]=equipas[i];
+            totalJornadas[i][1]=e.nome;
+
+            totalJornadas[i+nEquipas][0]=e.nome;
+            totalJornadas[i+nEquipas][1]=equipas[i];
+        }
     }
-    delete [] jornadasCasa;
-    delete [] jornadasFora;
+    return totalJornadas;
+}
+
+Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas) {
+    for (int i = 0; i < nEquipas; i++) {
+        if (liga[i].nome == nome) {
+            return liga[i];
+        }
+    }
+    return liga[0]; // Caso de segurança
+}
+//Gerar o resultado de uma partida e alterar os pontos c:Casa, f:Fora, h:Home, a:Away
+void gerarResultado(Equipa& h, Equipa& a) {
+    int c= gerarAleatorio(0,8);
+    int f= gerarAleatorio(0,8);
+    if (c==f) {
+        h.pontos+=1;
+        a.pontos+=1;
+    }
+    else if (c>f) {
+        h.pontos+=3;
+    }
+    else if (c<f) {
+        a.pontos+=3;
+    }
+    cout<<h.nome<<" "<<c<<" - "<<f<<" "<<a.nome<<endl;
 }
