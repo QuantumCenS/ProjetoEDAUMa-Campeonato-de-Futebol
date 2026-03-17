@@ -126,7 +126,7 @@ void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes) {
     for (int i = 0; i < 2; i++) {   //  2 jogadores por jornada
         if (e.totalLT < e.capacidadeLT) {
 
-            Jogador& novo = e.ListaTransf[e.totalLT];                              // 2. Criar um atalho para a primeira posição vazia no fim da lista
+            Jogador& novo = e.ListaTransf[e.totalLT];                              //  Criar um atalho para a primeira posição vazia no fim da lista
             preencherAtributosIndependentes(novo,listaNomes,totalNomes);
             Posicao posicoes[] = { GR, DEF, MED, AVA };
             novo.pos = posicoes[gerarAleatorio(0, 3)];
