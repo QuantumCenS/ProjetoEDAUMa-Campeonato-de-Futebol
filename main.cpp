@@ -23,6 +23,24 @@ int main() {
 
     exibirPlantel(meuTime);
 
+
+
+    Equipa mercadoTransferencias;
+    listaTranf(mercadoTransferencias);
+
+    // teste lista de transferencias
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+
+    exibirListaTransf(mercadoTransferencias);
+
+
+
+
+    
+
     libertarMemoria(meuTime, bancoDeNomes);
     string* equipas =carregarEquipas("equipas.txt");
     gerarJornadas("equipas.txt",equipas);
