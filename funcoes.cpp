@@ -126,16 +126,17 @@ void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes) {
     for (int i = 0; i < 2; i++) {   //  2 jogadores por jornada
         if (e.totalLT < e.capacidadeLT) {
 
-            Jogador& novo = e.ListaTransf[e.totalLT];                              //  Criar um atalho para a primeira posição vazia no fim da lista
+            Jogador& novo = e.ListaTransf[e.totalLT];                              // 2. Criar um atalho para a primeira posição vazia no fim da lista
             preencherAtributosIndependentes(novo,listaNomes,totalNomes);
             Posicao posicoes[] = { GR, DEF, MED, AVA };
             novo.pos = posicoes[gerarAleatorio(0, 3)];
-            novo.numero = gerarAleatorio(1, 99);
+            novo.numero = e.totalLT +1;   //pra nao começar em 0
 
             e.totalLT++;
         }
     }
     OrdenarPorPos(e.ListaTransf, e.totalLT);
+    OrdenarPorChegadaLT(e);
 
 }
 
@@ -183,4 +184,18 @@ void OrdenarPorPos(Jogador* lista, int total) {
             }
         }
     }
+}
+
+
+void OrdenarPorChegadaLT(Equipa& e) {
+    for (int i=0; i<e.totalLT - 1 ; i++) {               //percorrer a lista de transferecencias
+        for (int j=0; j<e.totalLT - i -1; j++) {           //comparar os da mesma posiçao pra ordenar por chegada(numero)
+            if ((e.ListaTransf[j].pos == e.ListaTransf[j+1].pos) &&(e.ListaTransf[j].numero > e.ListaTransf[j+1].numero)){   //verificar posiçao e numero de chegada
+                Jogador temporario = e.ListaTransf[j];
+                e.ListaTransf[j] = e.ListaTransf[j+1];
+                e.ListaTransf[j+1] = temporario;
+            }
+        }
+    }
+
 }
