@@ -135,7 +135,7 @@ void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes) {
             e.totalLT++;
         }
     }
-    OrdenarJogadores(e.ListaTransf, e.totalLT);
+    OrdenarPorPos(e.ListaTransf, e.totalLT);
 
 }
 
@@ -170,7 +170,7 @@ void preencherAtributosIndependentes(Jogador& novo, string* listaNomes, int tota
 
 
 
-void OrdenarJogadores(Jogador* lista, int total) {
+void OrdenarPorPos(Jogador* lista, int total) {
 
     for (int i = 0; i < total - 1; i++) {
         for (int j = 0; j < total - i - 1; j++) {
