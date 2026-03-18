@@ -51,7 +51,7 @@ void listaTranf(Equipa& e);
 void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes);
 void preencherAtributosIndependentes(Jogador& novo, string* listaNomes, int totalNomes);
 void exibirListaTransf(const Equipa& e);
-void OrdenarJogadores(Jogador* lista, int total);
+void OrdenarPorPos(Jogador* lista, int total);
 
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
