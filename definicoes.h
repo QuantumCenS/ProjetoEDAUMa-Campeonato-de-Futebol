@@ -8,15 +8,6 @@ using namespace std;
 
 enum Posicao { GR = 0, DEF = 1, MED = 2, AVA = 3 };
 
-struct Equipa {
-    string nome;
-    string* plantel;      // Array dinâmico de jogadores
-    int nJogadores;
-    int pontos;           // Classificação atualizada
-    // Listas de lesionados, transferências, etc.
-};
-
-
 struct Jogador {
     string nome;
     int numero;
@@ -26,6 +17,19 @@ struct Jogador {
     int probCastigo; // 0 a 20%
     int qualidade;   // 0 a 100
 };
+
+
+struct Equipa {
+    string nome;
+    string* plantel;      // Array dinâmico de jogadores
+    int nJogadores;
+    int pontos;           // Classificação atualizada
+    int capacidadeLT;
+    int totalLT;
+    Jogador* ListaTransf;
+    // Listas de lesionados, etc.
+};
+
 
 struct Plantel {
     Jogador* jogadores; // Array dinâmico
@@ -43,7 +47,17 @@ void exibirPlantel(const Plantel& p);
 int contaEquipas(string f);
 string* carregarEquipas(string f);
 void baralhar(string* equipas, int nEquipas);
-void gerarJornadas(string f,string* equipas);
+string** gerarJornadas(Equipa e,string f,string* equipas);
+Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas);
+void gerarResultado(Equipa& h, Equipa& a);
+
+
+void listaTranf(Equipa& e);
+void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes);
+void preencherAtributosIndependentes(Jogador& novo, string* listaNomes, int totalNomes);
+void exibirListaTransf(const Equipa& e);
+void OrdenarPorPos(Jogador* lista, int total);
+void OrdenarPorChegadaLT(Equipa& e);
 
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H

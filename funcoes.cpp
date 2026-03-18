@@ -109,3 +109,93 @@ void libertarMemoria(Plantel& p, string* listaNomes) {
     delete[] p.jogadores;
     delete[] listaNomes;
 }
+
+
+
+void listaTranf(Equipa& e) {
+    e.capacidadeLT = 100;
+    e.totalLT = 0;
+    e.ListaTransf = new Jogador[e.capacidadeLT];                 //array duinamico do tipo jogador 
+
+
+}
+
+
+void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes) {
+
+    for (int i = 0; i < 2; i++) {   //  2 jogadores por jornada
+        if (e.totalLT < e.capacidadeLT) {
+
+            Jogador& novo = e.ListaTransf[e.totalLT];                              // 2. Criar um atalho para a primeira posição vazia no fim da lista
+            preencherAtributosIndependentes(novo,listaNomes,totalNomes);
+            Posicao posicoes[] = { GR, DEF, MED, AVA };
+            novo.pos = posicoes[gerarAleatorio(0, 3)];
+            novo.numero = e.totalLT +1;   //pra nao começar em 0
+
+            e.totalLT++;
+        }
+    }
+    OrdenarPorPos(e.ListaTransf, e.totalLT);
+    OrdenarPorChegadaLT(e);
+
+}
+
+void exibirListaTransf(const Equipa& e) {
+    const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
+
+    cout << "************************************************************************\n";
+    cout<< "Lista de Transferencias:\n";
+    cout << "------------------------------------------------------------------------\n";
+
+    cout << "NUM | POS | IDADE | QUAL | LESAO | CAST | NOME\n";
+
+    for (int i = 0; i < e.totalLT; i++) {
+        Jogador& j = e.ListaTransf[i];
+        printf("%-3d | %-3s | %-5d | %-4d | %-4d%% | %-3d%% | %s\n",
+               j.numero, posTxt[j.pos], j.idade, j.qualidade,
+               j.probLesao, j.probCastigo, j.nome.c_str());
+    }
+    cout << "========================================================================\n";
+}
+
+
+
+// Numero e Posicao dependem das restricoes do plantel
+void preencherAtributosIndependentes(Jogador& novo, string* listaNomes, int totalNomes) {
+    novo.nome = listaNomes[gerarAleatorio(0, totalNomes - 1)];
+    novo.idade = gerarAleatorio(17, 38);
+    novo.probLesao = gerarAleatorio(0, 15);
+    novo.probCastigo = gerarAleatorio(0, 20);
+    novo.qualidade = gerarAleatorio(0, 100);
+}
+
+
+
+void OrdenarPorPos(Jogador* lista, int total) {
+
+    for (int i = 0; i < total - 1; i++) {
+        for (int j = 0; j < total - i - 1; j++) {
+
+            if (lista[j].pos > lista[j+1].pos) {
+
+                Jogador temporario = lista[j];
+                lista[j] = lista[j+1];
+                lista[j+1] = temporario;
+            }
+        }
+    }
+}
+
+
+void OrdenarPorChegadaLT(Equipa& e) {
+    for (int i=0; i<e.totalLT - 1 ; i++) {               //percorrer a lista de transferecencias
+        for (int j=0; j<e.totalLT - i -1; j++) {           //comparar os da mesma posiçao pra ordenar por chegada(numero)
+            if ((e.ListaTransf[j].pos == e.ListaTransf[j+1].pos) &&(e.ListaTransf[j].numero > e.ListaTransf[j+1].numero)){   //verificar posiçao e numero de chegada
+                Jogador temporario = e.ListaTransf[j];
+                e.ListaTransf[j] = e.ListaTransf[j+1];
+                e.ListaTransf[j+1] = temporario;
+            }
+        }
+    }
+
+}
