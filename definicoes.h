@@ -47,11 +47,13 @@ int contaEquipas(string f);
 string* carregarEquipas(string f);
 void baralhar(string* equipas, int nEquipas);
 void gerarJornadas(string f,string* equipas);
+
 void listaTranf(Equipa& e);
 void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes);
 void preencherAtributosIndependentes(Jogador& novo, string* listaNomes, int totalNomes);
 void exibirListaTransf(const Equipa& e);
 void OrdenarPorPos(Jogador* lista, int total);
+void OrdenarPorChegadaLT(Equipa& e);
 
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
