@@ -107,7 +107,6 @@ void exibirPlantel(const Plantel& p) {
 
 void libertarMemoria(Plantel& p, string* listaNomes) {
     delete[] p.jogadores;
-    delete[] listaNomes;
 }
 
 

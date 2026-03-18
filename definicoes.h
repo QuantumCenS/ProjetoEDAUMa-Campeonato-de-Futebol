@@ -21,13 +21,12 @@ struct Jogador {
 
 struct Equipa {
     string nome;
-    string* plantel;      // Array dinâmico de jogadores
-    int nJogadores;
-    int pontos;           // Classificação atualizada
-    int capacidadeLT;
-    int totalLT;
-    Jogador* ListaTransf;
-    // Listas de lesionados, etc.
+    string* plantel = nullptr;    // <-- INICIALIZAR A NULLPTR
+    int nJogadores = 0;           // <-- INICIALIZAR A ZERO
+    int pontos = 0;               // <-- INICIALIZAR A ZERO
+    int capacidadeLT = 0;
+    int totalLT = 0;
+    Jogador* ListaTransf = nullptr; // <-- INICIALIZAR A NULLPTR
 };
 
 

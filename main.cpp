@@ -49,29 +49,32 @@ int main() {
 
     libertarMemoria(meuTime, bancoDeNomes);
     //=======================================================================================================
-    string** jornadas = gerarJornadas(liga[0],"equipas.txt",equipas);
+    string** jornadas = gerarJornadas(liga[0], "equipas.txt", equipas);
+    int totalJornadas = (TOTAL_EQUIPAS - 1) * 2; // Calcula que são 34 (se TOTAL for 18)
 
-    //for (int i = 0 ; i < 34 ; i++) {
-      //  cout<<jornadas[i][0]<<" - "<<jornadas[i][1]<<endl;
-    //}
-    for (int i = 1; i < 34; i++) {
-        Equipa&  h=encontrarEquipa(jornadas[i][0],liga,18);
-        Equipa& a=encontrarEquipa(jornadas[i][1],liga,18);
-        gerarResultado(h,a);
-        //cout << "EDA FC pontos: "<<liga[0].pontos<<endl;
+    // Reparou que o seu ciclo começava em 1? Mudei para 0 para ele jogar a primeira jornada!
+    for (int i = 0; i < totalJornadas; i++) {
+        // Adicionada segurança para não ler nullptr
+        if (jornadas[i] != nullptr) {
+            Equipa& h = encontrarEquipa(jornadas[i][0], liga, TOTAL_EQUIPAS);
+            Equipa& a = encontrarEquipa(jornadas[i][1], liga, TOTAL_EQUIPAS);
+            gerarResultado(h, a);
+        }
     }
-    //=======================================================================================================
 
+    //=======================================================================================================
+    // Limpeza de Memória (com totalJornadas)
     for (int i = 0; i < TOTAL_EQUIPAS; i++) {
         delete[] liga[i].plantel;
     }
-    for (int i = 0; i < 34; i++) {
-        delete[] jornadas[i];
+    for (int i = 0; i < totalJornadas; i++) {
+        if (jornadas[i] != nullptr) {
+            delete[] jornadas[i];
+        }
     }
     delete[] jornadas;
     delete[] liga;
     delete[] equipas;
-
 
     //=======================================================================================================
     Equipa mercadoTransferencias;
