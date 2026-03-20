@@ -68,11 +68,9 @@ void baralhar(string* equipas, int nEquipas ) {
 }
 
 //Gerar Jornadas do campeonato
-string** gerarJornadas( Equipa e ,string f, string* equipas) {
-    fstream file(f);
+string** gerarJornadas( Equipa e, string* equipas) {
     int nJornadas =34;
-    int rep=0;
-    int nEquipas=contaEquipas(f); //Se o ficheiro de equipas tiver 50 equipas, substituir este número por 17 ou 18
+    int nEquipas=17; //Se o ficheiro de equipas tiver 50 equipas, substituir este número por 17 ou 18
     auto **totalJornadas= new string*[nJornadas];
     baralhar(equipas,nEquipas);
     for (int i=0;i<nEquipas;i++) {

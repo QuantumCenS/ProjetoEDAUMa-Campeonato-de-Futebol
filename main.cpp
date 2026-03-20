@@ -49,12 +49,12 @@ int main() {
 
     libertarMemoria(meuTime, bancoDeNomes);
     //=======================================================================================================
-    string** jornadas = gerarJornadas(liga[0],"equipas.txt",equipas);
+    string** jornadas = gerarJornadas(liga[0],equipas);
 
     //for (int i = 0 ; i < 34 ; i++) {
-      //  cout<<jornadas[i][0]<<" - "<<jornadas[i][1]<<endl;
+        //cout<<jornadas[i][0]<<" - "<<jornadas[i][1]<<endl;
     //}
-    for (int i = 1; i < 34; i++) {
+    for (int i = 0; i < 34; i++) {
         Equipa&  h=encontrarEquipa(jornadas[i][0],liga,18);
         Equipa& a=encontrarEquipa(jornadas[i][1],liga,18);
         gerarResultado(h,a);
@@ -71,5 +71,19 @@ int main() {
     delete[] jornadas;
     delete[] liga;
     delete[] equipas;
+
+
+    //=======================================================================================================
+    Equipa mercadoTransferencias;
+    listaTranf(mercadoTransferencias);
+
+    // teste lista de transferencias
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+
+    exibirListaTransf(mercadoTransferencias);
+
     return 0;
 }
