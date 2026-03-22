@@ -31,7 +31,7 @@ bool jogadorJaConvocado(const Tatica& t, const string& nomeJogador) {
 
 void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
     p.capacidade = gerarAleatorio(20, 30);
-    p.jogadores = new Jogador[p.capacidade];
+    p.jogadores = new Jogador[30];
     p.totalAtual = 0;
 
     // Cálculo das quantidades por posição (Lógica da pergunta anterior)
@@ -77,7 +77,7 @@ void exibirPlantel(const Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
     cout << "========================================================================\n";
-    cout << "PLANTEL GERADO - Capacidade: " << p.capacidade << "\n";
+    cout << "PLANTEL GERADO - Capacidade: " << p.totalAtual << "\n";
     cout << "========================================================================\n";
     cout << "NUM | POS | IDADE | QUAL | LESAO | CAST | NOME\n";
     cout << "------------------------------------------------------------------------\n";
