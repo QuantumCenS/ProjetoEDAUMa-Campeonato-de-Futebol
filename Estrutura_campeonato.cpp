@@ -1,93 +1,128 @@
+//
+// Created by Henrique Nóbrega on 12/03/2026.
+//
 #include <iostream>
 #include <fstream>
-#include <string>
-#include "definicoes.h"
+#include "Inicializacao_Plantel_EDA_FC.h"
+#include "Estrutura_campeonato.h"
+#include "Lista_Transferências.h"
+#include "Taticas.h"
+#include "Castigados_Lesionados.h"
+
 
 using namespace std;
 
-// Conta as equipas totais no ficheiro para alocação temporária
-int contaEquipasFicheiro(string f) {
-    ifstream file(f);
-    string s; int n = 0;
-    while (getline(file, s)) if (!s.empty()) n++;
-    return n;
-}
 
-Equipa* criarLiga(string fEquipas, string* listaNomes, int totalNomes, int& nTotal) {
-    int nFich = contaEquipasFicheiro(fEquipas);
 
-    // 1. Ler TODAS as equipas do ficheiro para um array temporário para podermos escolher
-    string* todasDoFicheiro = new string[nFich];
-    ifstream file(fEquipas);
-    int idx = 0;
-    while (getline(file, todasDoFicheiro[idx]) && idx < nFich) {
-        if (!todasDoFicheiro[idx].empty()) idx++;
+//Contar o numero de equipas do ficheiro
+int contaEquipas(string f) {
+    fstream file(f);
+    string line;
+    if (!file.is_open()) {
+        return 0;
     }
+    int nEquipas=0;
+    int i=0;
+    while (getline(file,line)) {
+        if (!line.empty()) {
+            nEquipas++;
+            i++;
+        }
+    }
+    file.clear();
+    file.seekg(0);
+    return nEquipas;
+}
+//Por o nome das equipas num array
+string* carregarEquipas(string f) {
+    fstream file(f);
+    string line;
+
+    if (!file.is_open()) {
+        return nullptr;
+    }
+
+    int nEquipas=contaEquipas(f);
+
+    auto* equipas= new string[nEquipas];
+
+    int i = 0;
+    while (getline(file,line)) {
+        if (!line.empty()) {
+            equipas[i] = line;
+            i++;
+        }
+    }
+    file.clear();
+    file.seekg(0);
     file.close();
-
-    // 2. Baralhar o array temporário para garantir aleatoriedade na escolha
-    for (int i = nFich - 1; i > 0; i--) {
-        int j = gerarAleatorio(0, i);
-        string temp = todasDoFicheiro[i];
-        todasDoFicheiro[i] = todasDoFicheiro[j];
-        todasDoFicheiro[j] = temp;
-    }
-
-    // 3. Fixar o limite de 18 equipas no total (17 do ficheiro + EDA FC)
-    nTotal = 18;
-    Equipa* liga = new Equipa[nTotal];
-
-    // Inicializar EDA FC na posição 0
-    liga[0].nome = "EDA FC";
-    liga[0].pontos = 0;
-    inicializarPlantel(liga[0].plantel, listaNomes, totalNomes);
-
-    // Inicializar as outras 17 equipas (as primeiras 17 do array baralhado)
-    for (int i = 1; i < nTotal; i++) {
-        liga[i].nome = todasDoFicheiro[i - 1]; // Pega as aleatórias
-        liga[i].pontos = 0;
-        // Aplica as mesmas regras de plantel (20-30 jogadores, etc)
-        inicializarPlantel(liga[i].plantel, listaNomes, totalNomes);
-    }
-
-    delete[] todasDoFicheiro; // Limpar array temporário de nomes
-    return liga;
+    return equipas;
 }
 
-void gerarCalendarioEDAFC(Equipa* liga, int nTotal) {
-    // nTotal é 18, logo temos 17 adversários.
-    int nAdversarios = nTotal - 1;
-    bool* edaEmCasaPrimeiraVolta = new bool[nAdversarios];
+//Baralha as equipas aleatóriamente dentro do array
+void baralhar(string* equipas, int nEquipas ) {
+    // Percorre o array do fim para o início
+    for (int i = nEquipas - 1; i > 0; i--) {
+        // Gera um índice aleatório entre 0 e i
+        int j = gerarAleatorio(0, i);
 
-    // Definir mando de campo aleatório para a 1ª volta
-    for (int i = 0; i < nAdversarios; i++) {
-        edaEmCasaPrimeiraVolta[i] = (gerarAleatorio(0, 1) == 1);
+        // Troca os elementos (Swap)
+        string temp = equipas[i];
+        equipas[i] = equipas[j];
+        equipas[j] = temp;
     }
+}
 
-    cout << "\n==============================================";
-    cout << "\n   CALENDARIO EDA FC - 34 JORNADAS";
-    cout << "\n==============================================\n";
+//Gerar Jornadas do campeonato
+string** gerarJornadas(Equipa e, string f, string* equipas) {
+    int nEquipas = contaEquipas(f);
+    int nJornadas = nEquipas * 2; // O tamanho agora é calculado automaticamente!
 
-    // PRIMEIRA PARTE: Jornadas 1 a 17
-    cout << "\n--- PRIMEIRA VOLTA ---\n";
-    for (int i = 0; i < nAdversarios; i++) {
-        cout << "Jornada " << (i + 1) << ": ";
-        if (edaEmCasaPrimeiraVolta[i])
-            cout << "EDA FC (C) vs " << liga[i+1].nome << " (F)" << endl;
-        else
-            cout << liga[i+1].nome << " (C) vs EDA FC (F)" << endl;
+    // O {} no fim é magia C++: garante que todas as posições nascem a nullptr e não como lixo
+    auto **totalJornadas = new string*[nJornadas]{};
+
+    baralhar(equipas, nEquipas);
+
+    for (int i = 0; i < nEquipas; i++) {
+        totalJornadas[i] = new string[2];
+        totalJornadas[i + nEquipas] = new string[2];
+
+        if (i % 2 == 0) {
+            totalJornadas[i][0] = e.nome;
+            totalJornadas[i][1] = equipas[i];
+            totalJornadas[i + nEquipas][0] = equipas[i];
+            totalJornadas[i + nEquipas][1] = e.nome;
+        } else {
+            totalJornadas[i][0] = equipas[i];
+            totalJornadas[i][1] = e.nome;
+            totalJornadas[i + nEquipas][0] = e.nome;
+            totalJornadas[i + nEquipas][1] = equipas[i];
+        }
     }
+    return totalJornadas;
+}
 
-    // SEGUNDA PARTE: Jornadas 18 a 34 (Inversão)
-    cout << "\n--- SEGUNDA VOLTA (INVERSAO) ---\n";
-    for (int i = 0; i < nAdversarios; i++) {
-        cout << "Jornada " << (i + 18) << ": ";
-        // Se jogou em casa na volta 1, agora joga fora
-        if (!edaEmCasaPrimeiraVolta[i])
-            cout << "EDA FC (C) vs " << liga[i+1].nome << " (F)" << endl;
-        else
-            cout << liga[i+1].nome << " (C) vs EDA FC (F)" << endl;
+Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas) {
+    for (int i = 0; i < nEquipas; i++) {
+        if (liga[i].nome == nome) {
+            return liga[i];
+        }
     }
-
-    delete[] edaEmCasaPrimeiraVolta;
+    return liga[0]; // Caso de segurança
+}
+//Gerar o resultado de uma partida e alterar os pontos c:Casa, f:Fora, h:Home, a:Away
+void gerarResultado(Equipa& h, Equipa& a) {
+    int c= gerarAleatorio(0,8);
+    int f= gerarAleatorio(0,8);
+    if (c==f) {
+        h.pontos+=1;
+        a.pontos+=1;
+    }
+    else if (c>f) {
+        h.pontos+=3;
+    }
+    else if (c<f) {
+        a.pontos+=3;
+    }
+    cout<<h.nome<<" "<<c<<" - "<<f<<" "<<a.nome<<endl;
 }
