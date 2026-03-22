@@ -13,5 +13,9 @@ void preencherAtributosIndependentes(Jogador& novo, string* listaNomes, int tota
 void exibirListaTransf(const Equipa& e);
 void OrdenarPorPos(Jogador* lista, int total);
 void OrdenarPorChegadaLT(Equipa& e);
+void ContratarJogador(Plantel& p,Equipa& e);
+void GerarNumeroContratacao(Plantel& p, int indice);
+void TaparBuraco(Jogador* lista, int total,int j);
+bool PodeContratarParaPosicao(Plantel& p, int j);
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_LISTA_TRANSFERÊNCIAS_H
