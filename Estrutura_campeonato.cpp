@@ -74,29 +74,27 @@ void baralhar(string* equipas, int nEquipas ) {
 }
 
 //Gerar Jornadas do campeonato
-string** gerarJornadas(Equipa e, string f, string* equipas) {
-    int nEquipas = contaEquipas(f);
-    int nJornadas = nEquipas * 2; // O tamanho agora é calculado automaticamente!
-
-    // O {} no fim é magia C++: garante que todas as posições nascem a nullptr e não como lixo
-    auto **totalJornadas = new string*[nJornadas]{};
-
-    baralhar(equipas, nEquipas);
-
-    for (int i = 0; i < nEquipas; i++) {
+string** gerarJornadas( Equipa e, string* equipas) {
+    int nJornadas =34;
+    int nEquipas=17; //Se o ficheiro de equipas tiver 50 equipas, substituir este número por 17 ou 18
+    auto **totalJornadas= new string*[nJornadas];
+    baralhar(equipas,nEquipas);
+    for (int i=0;i<nEquipas;i++) {
         totalJornadas[i] = new string[2];
         totalJornadas[i + nEquipas] = new string[2];
+        if (i%2==0) {
+            totalJornadas[i][0]=e.nome;
+            totalJornadas[i][1]=equipas[i];
 
-        if (i % 2 == 0) {
-            totalJornadas[i][0] = e.nome;
-            totalJornadas[i][1] = equipas[i];
-            totalJornadas[i + nEquipas][0] = equipas[i];
-            totalJornadas[i + nEquipas][1] = e.nome;
-        } else {
-            totalJornadas[i][0] = equipas[i];
-            totalJornadas[i][1] = e.nome;
-            totalJornadas[i + nEquipas][0] = e.nome;
-            totalJornadas[i + nEquipas][1] = equipas[i];
+            totalJornadas[i+nEquipas][0]=equipas[i];
+            totalJornadas[i+nEquipas][1]=e.nome;
+        }
+        else {
+            totalJornadas[i][0]=equipas[i];
+            totalJornadas[i][1]=e.nome;
+
+            totalJornadas[i+nEquipas][0]=e.nome;
+            totalJornadas[i+nEquipas][1]=equipas[i];
         }
     }
     return totalJornadas;

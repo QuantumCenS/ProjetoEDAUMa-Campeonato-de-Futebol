@@ -14,7 +14,7 @@ using namespace std;
 int contaEquipas(string f);
 string* carregarEquipas(string f);
 void baralhar(string* equipas, int nEquipas);
-string** gerarJornadas(Equipa e,string f,string* equipas);
+string** gerarJornadas(Equipa e,string* equipas);
 Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas);
 void gerarResultado(Equipa& h, Equipa& a);
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_ESTRUTURA_CAMPEONATO_H

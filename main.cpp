@@ -60,11 +60,11 @@ int main() {
 
     libertarMemoria(meuTime, bancoDeNomes);
     //=======================================================================================================
-    string** jornadas = gerarJornadas(liga[0], "equipas.txt", equipas);
+    string** jornadas = gerarJornadas(liga[0], equipas);
     int totalJornadas = (TOTAL_EQUIPAS - 1) * 2; // Calcula que são 34 (se TOTAL for 18)
 
     // Reparou que o seu ciclo começava em 1? Mudei para 0 para ele jogar a primeira jornada!
-    for (int i = 0; i < totalJornadas; i++) {
+    for (int i = 0; i < 34; i++) {
         // Adicionada segurança para não ler nullptr
         if (jornadas[i] != nullptr) {
             Equipa& h = encontrarEquipa(jornadas[i][0], liga, TOTAL_EQUIPAS);
