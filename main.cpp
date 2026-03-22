@@ -4,6 +4,11 @@
 #include <iostream>
 #include <ctime>
 #include "definicoes.h"
+#include "Estrutura_campeonato.h"
+#include "Inicializacao_Plantel_EDA_FC.h"
+#include "Taticas.h"
+#include "Lista_Transferências.h"
+#include "Castigados_Lesionados.h"
 
 using namespace std;
 
@@ -43,17 +48,23 @@ int main() {
     }
 
     Plantel meuTime;
+    Tatica meuTime2; // Isto agora vai guardar os Titulares e Suplentes!
+
     inicializarPlantel(meuTime, bancoDeNomes, totalNomesDisponiveis);
 
+    // AGORA RECEBE O PLANTEL GERADO EM VEZ DO BANCO DE NOMES
+    inicializarTatica(meuTime2, meuTime);
+
     exibirPlantel(meuTime);
+    exibirTatica(meuTime2);
 
     libertarMemoria(meuTime, bancoDeNomes);
     //=======================================================================================================
-    string** jornadas = gerarJornadas(liga[0], "equipas.txt", equipas);
+    string** jornadas = gerarJornadas(liga[0], equipas);
     int totalJornadas = (TOTAL_EQUIPAS - 1) * 2; // Calcula que são 34 (se TOTAL for 18)
 
     // Reparou que o seu ciclo começava em 1? Mudei para 0 para ele jogar a primeira jornada!
-    for (int i = 0; i < totalJornadas; i++) {
+    for (int i = 0; i < 34; i++) {
         // Adicionada segurança para não ler nullptr
         if (jornadas[i] != nullptr) {
             Equipa& h = encontrarEquipa(jornadas[i][0], liga, TOTAL_EQUIPAS);
@@ -87,6 +98,30 @@ int main() {
     adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
 
     exibirListaTransf(mercadoTransferencias);
+
+
+    /*cout << "0. Sair " << endl << "o. Operações EDA FC";
+
+    char choice;
+    cin >> choice;
+
+    switch (choice) {
+        case 0:
+            cout << "Até já!\n";
+            return 0;
+        case 1:
+            int choice2;
+            cin >> choice2;
+            case 0:
+                cout << "O. Sair" << endl;
+            cout << "1. Plantel" << endl;
+            cout << "2. Tatica" << endl;
+            cout << "3. Lista de Transferencias" << endl;
+            cout << "4. Lista de Castigados" << endl;
+            cout << "5. Lista de Lesionados" << endl;
+
+    }
+    */
 
     return 0;
 }

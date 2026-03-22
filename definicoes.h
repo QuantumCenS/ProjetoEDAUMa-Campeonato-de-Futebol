@@ -4,6 +4,7 @@
 
 #ifndef PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
 #define PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
+/*
 using namespace std;
 
 enum Posicao { GR = 0, DEF = 1, MED = 2, AVA = 3 };
@@ -36,12 +37,21 @@ struct Plantel {
     int totalAtual;
 };
 
+struct Tatica {
+    Jogador* jogadores;
+    int capacidade;
+    int totalAtual;
+};
+
 // Protótipos das funções
 int gerarAleatorio(int min, int max);
 string* carregarNomes(string filename, int& totalNomes);
 void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes);
+void inicializarTatica(Tatica& t, const Plantel& p);
 void libertarMemoria(Plantel& p, string* listaNomes);
 void exibirPlantel(const Plantel& p);
+void exibirTatica(const Tatica& t);
+bool jogadorJaConvocado(const Tatica& t, const string& nomeJogador);
 //Estrutura do campeonato
 int contaEquipas(string f);
 string* carregarEquipas(string f);
@@ -58,5 +68,9 @@ void exibirListaTransf(const Equipa& e);
 void OrdenarPorPos(Jogador* lista, int total);
 void OrdenarPorChegadaLT(Equipa& e);
 
+
+void menuOperacoes();
+void verJornadas();
+*/
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_DEFINICOES_H
