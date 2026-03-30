@@ -15,9 +15,11 @@ struct Jogador {
     int numero;
     Posicao pos;
     int idade;
-    int probLesao;   // 0 a 15%
-    int probCastigo; // 0 a 20%
-    int qualidade;   // 0 a 100
+    int probLesao;
+    int probCastigo;
+    int qualidade;
+    int jogosLesao = 0;   // <-- NOVO: Controla os jogos de fora por lesão
+    int jogosCastigo = 0; // <-- NOVO: Controla os jogos de fora por castigo
 };
 
 
@@ -33,9 +35,9 @@ struct Equipa {
 
 
 struct Plantel {
-    Jogador* jogadores; // Array dinâmico
-    int capacidade;     // Entre 20 e 30
-    int totalAtual;
+    Jogador* jogadores = nullptr; // <-- CRUCIAL
+    int capacidade = 0;
+    int totalAtual = 0;
 };
 
 int gerarAleatorio(int min, int max);

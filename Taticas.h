@@ -9,13 +9,14 @@
 
 
 struct Tatica {
-    Jogador* jogadores;
-    int capacidade;
-    int totalAtual;
+    Jogador* jogadores = nullptr; // <-- CRUCIAL: Impede o "lixo" de memória
+    int capacidade = 0;
+    int totalAtual = 0;
 };
 
-void inicializarTatica(Tatica& t, const Plantel& p);
+bool inicializarTatica(Tatica& t, const Plantel& p, int formacaoEscolhida);
 void exibirTatica(const Tatica& t);
 bool jogadorJaConvocado(const Tatica& t, const string& nomeJogador);
+
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_TATICAS_H

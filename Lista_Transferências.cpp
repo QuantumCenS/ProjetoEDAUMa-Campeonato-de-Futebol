@@ -17,12 +17,15 @@ void listaTranf(Equipa& e) {
     e.ListaTransf = new Jogador[e.capacidadeLT];                 //array duinamico do tipo jogador
 }
 
-void adicionarJogLT(Equipa& e, string* listaNomes, int totalNomes) {
+void adicionarJogLT(Equipa& e, const Plantel& p, string* listaNomes, int totalNomes) {
     for (int i = 0; i < 2; i++) {   //  2 jogadores por jornada
-        
+
         if (e.totalLT < e.capacidadeLT) {
-            Jogador& novo = e.ListaTransf[e.totalLT];                              // Criar um atalho para a primeira posição vazia no fim da lista
-            preencherAtributosIndependentes(novo,listaNomes,totalNomes);
+            Jogador& novo = e.ListaTransf[e.totalLT];
+
+            // Agora passamos o "p" para a função abaixo:
+            preencherAtributosIndependentes(novo, p, listaNomes, totalNomes);
+
             Posicao posicoes[] = { GR, DEF, MED, AVA };
             novo.pos = posicoes[gerarAleatorio(0, 3)];
 
@@ -60,11 +63,49 @@ void exibirListaTransf(const Equipa& e) {
     cout << "========================================================================\n";
 }
 
+bool nomeJaExisteNoPlantel(const Plantel& p, string nome) {
+    for (int i = 0; i < p.totalAtual; i++) {
+        if (p.jogadores[i].nome == nome) return true;
+    }
+    return false;
+}
+
+
+int ContarJogNumaPos(Plantel& p, int j){                    // j indica a posição (0=GR, 1=DEF, 2=MED, 3=AVA)
+    int contador = 0;
+    for (int i = 0; i < p.totalAtual; i++) {
+
+        if (p.jogadores[i].pos == j) {
+            contador++;
+        }
+    }
+    return contador;
+}
+
+//Avalia se pode ser contratado para a posicao
+bool PodeContratarParaPosicao(Plantel& p, int j) {
+
+    int limitesMaximos[] = {3, 10, 10, 7};
+    int quantidadeAtual = ContarJogNumaPos(p, j);
+
+    if (quantidadeAtual >= limitesMaximos[j]) {
+        return false; // posicao ja atingiu o max de jogadores
+    }
+
+    return true; //ainda ha espaço pra mais jogadores nessa posicao
+}
+
 
 
 // Numero e Posicao dependem das restricoes do plantel
-void preencherAtributosIndependentes(Jogador& novo, string* listaNomes, int totalNomes) {
-    novo.nome = listaNomes[gerarAleatorio(0, totalNomes - 1)];
+void preencherAtributosIndependentes(Jogador& novo, const Plantel& p, string* listaNomes, int totalNomes) {
+    string nomeSorteado;
+    // Sorteia nomes até calhar um que NÃO esteja no plantel
+    do {
+        nomeSorteado = listaNomes[gerarAleatorio(0, totalNomes - 1)];
+    } while (nomeJaExisteNoPlantel(p, nomeSorteado));
+
+    novo.nome = nomeSorteado;
     novo.idade = gerarAleatorio(17, 38);
     novo.probLesao = gerarAleatorio(0, 15);
     novo.probCastigo = gerarAleatorio(0, 20);
@@ -101,22 +142,34 @@ void OrdenarPorChegadaLT(Equipa& e) {
 
 }
 
+bool numeroJaExiste(const Plantel& p, int num, int indiceIgnorado) {
+    for (int i = 0; i < p.totalAtual; i++) {
+
+        // Se estivermos a olhar para a posição do próprio jogador que estamos a avaliar, saltamos!
+        if (i == indiceIgnorado) {
+            continue;
+        }
+
+        // Se encontrarmos o número noutro jogador, devolvemos true (já existe)
+        if (p.jogadores[i].numero == num) {
+            return true;
+        }
+    }
+    return false; // Percorreu tudo e o número está livre
+}
+
 //Gerar numero para o jogador contratado
 void GerarNumeroContratacao(Plantel& p, int indice) {
     int a = p.jogadores[indice].numero;
-    if (numeroJaExiste(p, a)) {
+
+    // Passamos o 'indice' para ele ignorar o próprio jogador na verificação
+    if (numeroJaExiste(p, a, indice)) {
         do {
             a = gerarAleatorio(1, 99);
-        } while (numeroJaExiste(p, a));
+        } while (numeroJaExiste(p, a, indice));
     }
+
     p.jogadores[indice].numero = a;
-}
-
-
-void TaparBuraco(Jogador* lista, int total,int j) {
-    for (int i=j;i <total - 1;i++) {                    //arrasta todos os jogadores 1 posicao pra esquerda a partir do que foi retirado
-        lista[i]=lista[i+1];
-    }
 }
 
 
@@ -239,7 +292,7 @@ void ContratarJogador(Plantel& p,Equipa& e) {
 }
 
 
-//Conta o numero de jogadores por posicao
+/*//Conta o numero de jogadores por posicao
 int ContarJogNumaPos(Plantel& p, int j){                    // j indica a posição (0=GR, 1=DEF, 2=MED, 3=AVA)
     int contador = 0;
     for (int i = 0; i < p.totalAtual; i++) {
@@ -262,4 +315,4 @@ bool PodeContratarParaPosicao(Plantel& p, int j) {
     }
 
     return true; //ainda ha espaço pra mais jogadores nessa posicao
-}
+}*/

@@ -31,10 +31,9 @@ bool jogadorJaConvocado(const Tatica& t, const string& nomeJogador) {
 
 void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
     p.capacidade = gerarAleatorio(20, 30);
-    p.jogadores = new Jogador[30];
+    p.jogadores = new Jogador[p.capacidade];
     p.totalAtual = 0;
 
-    // Cálculo das quantidades por posição (Lógica da pergunta anterior)
     int nGR = 2, nDEF = 7, nMED = 7, nAVA = 4;
     int soma = nGR + nDEF + nMED + nAVA;
 
@@ -46,11 +45,11 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
         else if (r == 3 && nAVA < 7) { nAVA++; soma++; }
     }
 
-    // Array com as quantidades para iterar na ordem correta
     int quantidades[] = { nGR, nDEF, nMED, nAVA };
     Posicao posicoes[] = { GR, DEF, MED, AVA };
+    int contadorCamisola = 1; // Variável para numerar de 1 a 30 de forma sequencial
 
-    for (int i = 0; i < 4; i++) { // Para cada posição (GR, DEF, MED, AVA)
+    for (int i = 0; i < 4; i++) {
         for (int j = 0; j < quantidades[i]; j++) {
             Jogador& novo = p.jogadores[p.totalAtual];
 
@@ -61,12 +60,8 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
             novo.probCastigo = gerarAleatorio(0, 20);
             novo.qualidade = gerarAleatorio(0, 100);
 
-            // Gerar número único para a camisola
-            int num;
-            do {
-                num = gerarAleatorio(1, 99);
-            } while (numeroJaExiste(p, num));
-            novo.numero = num;
+            // Regra da imagem: Número de jogadores 1-30 ordenando sequencialmente
+            novo.numero = contadorCamisola++;
 
             p.totalAtual++;
         }
@@ -77,7 +72,7 @@ void exibirPlantel(const Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
     cout << "========================================================================\n";
-    cout << "PLANTEL GERADO - Capacidade: " << p.totalAtual << "\n";
+    cout << "PLANTEL GERADO - Capacidade: " << p.capacidade << "\n";
     cout << "========================================================================\n";
     cout << "NUM | POS | IDADE | QUAL | LESAO | CAST | NOME\n";
     cout << "------------------------------------------------------------------------\n";
@@ -85,8 +80,13 @@ void exibirPlantel(const Plantel& p) {
     for (int i = 0; i < p.totalAtual; i++) {
         Jogador& j = p.jogadores[i];
         printf("%-3d | %-3s | %-5d | %-4d | %-4d%% | %-3d%% | %s\n",
-               j.numero, posTxt[j.pos], j.idade, j.qualidade,
-               j.probLesao, j.probCastigo, j.nome.c_str());
+        j.numero,
+        posTxt[j.pos],
+        j.idade,
+        j.qualidade,
+        j.probLesao,
+        j.probCastigo,
+        j.nome.c_str());
     }
     cout << "========================================================================\n";
 }

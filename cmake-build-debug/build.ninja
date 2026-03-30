@@ -105,6 +105,14 @@ build CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Castigados_Lesionados.c
   OBJECT_DIR = CMakeFiles\ProjetoEDAUMa_Campeonato_de_Futebol.dir
   OBJECT_FILE_DIR = CMakeFiles\ProjetoEDAUMa_Campeonato_de_Futebol.dir
 
+build CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/menu.cpp.obj: CXX_COMPILER__ProjetoEDAUMa_Campeonato_de_Futebol_unscanned_Debug C$:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/menu.cpp || cmake_object_order_depends_target_ProjetoEDAUMa_Campeonato_de_Futebol
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\ProjetoEDAUMa_Campeonato_de_Futebol.dir\menu.cpp.obj.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/.
+  OBJECT_DIR = CMakeFiles\ProjetoEDAUMa_Campeonato_de_Futebol.dir
+  OBJECT_FILE_DIR = CMakeFiles\ProjetoEDAUMa_Campeonato_de_Futebol.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target ProjetoEDAUMa_Campeonato_de_Futebol
@@ -113,7 +121,7 @@ build CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Castigados_Lesionados.c
 #############################################
 # Link the executable ProjetoEDAUMa_Campeonato_de_Futebol.exe
 
-build ProjetoEDAUMa_Campeonato_de_Futebol.exe: CXX_EXECUTABLE_LINKER__ProjetoEDAUMa_Campeonato_de_Futebol_Debug CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/funcoes.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/main.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Estrutura_campeonato.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Inicializacao_Plantel_EDA_FC.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Taticas.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Lista_Transferências.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Castigados_Lesionados.cpp.obj
+build ProjetoEDAUMa_Campeonato_de_Futebol.exe: CXX_EXECUTABLE_LINKER__ProjetoEDAUMa_Campeonato_de_Futebol_Debug CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/funcoes.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/main.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Estrutura_campeonato.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Inicializacao_Plantel_EDA_FC.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Taticas.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Lista_Transferências.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Castigados_Lesionados.cpp.obj CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/menu.cpp.obj
   CONFIG = Debug
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
