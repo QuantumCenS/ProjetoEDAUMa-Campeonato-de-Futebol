@@ -69,7 +69,12 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
 }
 
 void exibirPlantel(const Plantel& p) {
-    const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
+    // 1. Alocação Dinâmica para cumprir a regra!
+    string* posTxt = new string[4];
+    posTxt[0] = "GR";
+    posTxt[1] = "DEF";
+    posTxt[2] = "MED";
+    posTxt[3] = "AVA";
 
     cout << "========================================================================\n";
     cout << "PLANTEL GERADO - Capacidade: " << p.capacidade << "\n";
@@ -79,16 +84,21 @@ void exibirPlantel(const Plantel& p) {
 
     for (int i = 0; i < p.totalAtual; i++) {
         Jogador& j = p.jogadores[i];
+
+        // 2. O segredo no Mac: usar .c_str() no posTxt e no nome!
         printf("%-3d | %-3s | %-5d | %-4d | %-4d%% | %-3d%% | %s\n",
-        j.numero,
-        posTxt[j.pos],
-        j.idade,
-        j.qualidade,
-        j.probLesao,
-        j.probCastigo,
-        j.nome.c_str());
+               j.numero,
+               posTxt[j.pos].c_str(), // <-- ISTO RESOLVE O PROBLEMA DO MAC
+               j.idade,
+               j.qualidade,
+               j.probLesao,
+               j.probCastigo,
+               j.nome.c_str());       // <-- E ISTO TAMBÉM
     }
     cout << "========================================================================\n";
+
+    // 3. Libertar a memória do array dinâmico
+    delete[] posTxt;
 }
 
 void libertarMemoria(Plantel& p, string* listaNomes) {

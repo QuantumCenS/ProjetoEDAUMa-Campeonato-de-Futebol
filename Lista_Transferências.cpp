@@ -46,21 +46,32 @@ void adicionarJogLT(Equipa& e, const Plantel& p, string* listaNomes, int totalNo
 
 
 void exibirListaTransf(const Equipa& e) {
-    const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
+    string* posTxt = new string[4];
+    posTxt[0] = "GR";
+    posTxt[1] = "DEF";
+    posTxt[2] = "MED";
+    posTxt[3] = "AVA";
 
     cout << "************************************************************************\n";
-    cout<< "Lista de Transferencias:\n";
+    cout << "Lista de Transferencias:\n";
     cout << "------------------------------------------------------------------------\n";
-
     cout << "NUM | POS | IDADE | QUAL | LESAO | CAST | NOME\n";
 
     for (int i = 0; i < e.totalLT; i++) {
         Jogador& j = e.ListaTransf[i];
+
         printf("%-3d | %-3s | %-5d | %-4d | %-4d%% | %-3d%% | %s\n",
-               j.numero, posTxt[j.pos], j.idade, j.qualidade,
-               j.probLesao, j.probCastigo, j.nome.c_str());
+               j.numero,
+               posTxt[j.pos].c_str(),
+               j.idade,
+               j.qualidade,
+               j.probLesao,
+               j.probCastigo,
+               j.nome.c_str());
     }
     cout << "========================================================================\n";
+
+    delete[] posTxt;
 }
 
 bool nomeJaExisteNoPlantel(const Plantel& p, string nome) {

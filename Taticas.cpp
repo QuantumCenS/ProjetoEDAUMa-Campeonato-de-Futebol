@@ -120,28 +120,29 @@ bool inicializarTatica(Tatica& t, const Plantel& p, int formacaoEscolhida) {
 }
 
 void exibirTatica(const Tatica& t) {
-    const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
+    string* posTxt = new string[4];
+    posTxt[0] = "GR";
+    posTxt[1] = "DEF";
+    posTxt[2] = "MED";
+    posTxt[3] = "AVA";
 
-    cout << "11 Inicial\n";
-    cout << "Nome                 | N  | Posicao | Idade | ProbLesao | ProbCastigo | Qualidade\n";
-    cout << "---------------------------------------------------------------------------------\n";
+    cout << "========================================================================\n";
+    cout << "Tatica Default"<< "\n";
+    cout << "========================================================================\n";
+    cout << "NUM | POS | QUAL | NOME\n";
+    cout << "------------------------------------------------------------------------\n";
 
-    // Imprime os primeiros 11 (Titulares)
-    for (int i = 0; i < 11 && i < t.totalAtual; i++) {
+    for (int i = 0; i < t.totalAtual; i++) {
         Jogador& j = t.jogadores[i];
-        printf("%-20s | %-2d | %-7s | %-5d | %-8d%% | %-10d%% | %-9d\n",
-               j.nome.c_str(), j.numero, posTxt[j.pos], j.idade, j.probLesao, j.probCastigo, j.qualidade);
-    }
 
-    cout << "Suplentes:\n";
-    cout << "Nome                 | N  | Posicao | Idade | ProbLesao | ProbCastigo | Qualidade\n";
-    cout << "---------------------------------------------------------------------------------\n";
-
-    // Imprime do 11 para a frente (Suplentes)
-    for (int i = 11; i < t.totalAtual; i++) {
-        Jogador& j = t.jogadores[i];
-        printf("%-20s | %-2d | %-7s | %-5d | %-8d%% | %-10d%% | %-9d\n",
-               j.nome.c_str(), j.numero, posTxt[j.pos], j.idade, j.probLesao, j.probCastigo, j.qualidade);
+        printf("%-3d | %-3s | %-4d | %s\n",
+               j.numero,
+               posTxt[j.pos].c_str(),
+               j.qualidade,
+               j.nome.c_str());
     }
+    cout << "========================================================================\n";
+
+    delete[] posTxt;
 }
 
