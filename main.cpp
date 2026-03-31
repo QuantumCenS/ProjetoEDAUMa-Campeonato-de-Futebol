@@ -11,6 +11,8 @@
 using namespace std;
 
 int main() {
+    setbuf(stdout, NULL); // Desativa o buffer do printf
+
     srand(time(NULL));
     //=========================================================================
     const int TOTAL_EQUIPAS = 18;
