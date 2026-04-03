@@ -1,4 +1,4 @@
-//
+/*//
 // Created by Sergio on 3/20/2026.
 //
 
@@ -17,4 +17,4 @@ void baralhar(string* equipas, int nEquipas);
 string** gerarJornadas(Equipa e,string* equipas);
 Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas);
 void gerarResultado(Equipa& h, Equipa& a);
-#endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_ESTRUTURA_CAMPEONATO_H
+#endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_ESTRUTURA_CAMPEONATO_H*/

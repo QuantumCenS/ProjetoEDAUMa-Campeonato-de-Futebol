@@ -1,4 +1,4 @@
-//
+/*//
 // Created by Henrique Nóbrega on 12/03/2026.
 //
 #include <iostream>
@@ -123,4 +123,4 @@ void gerarResultado(Equipa& h, Equipa& a) {
         a.pontos+=3;
     }
     cout<<h.nome<<" "<<c<<" - "<<f<<" "<<a.nome<<endl;
-}
+}*/

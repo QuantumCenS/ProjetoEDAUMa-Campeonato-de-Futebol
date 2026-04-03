@@ -1,10 +1,11 @@
-/*//
-// Created by Sergio on 3/20/2026.
+//
+// Created by Sergio on 4/3/2026.
 //
 
-#ifndef PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_INICICALIZAÇÃO_PLANTEL_EDA_FC_H
-#define PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_INICICALIZAÇÃO_PLANTEL_EDA_FC_H
+#ifndef PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_CORE_H
+#define PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_CORE_H
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -18,14 +19,21 @@ struct Jogador {
     int probLesao;
     int probCastigo;
     int qualidade;
-    int jogosLesao = 0;   // <-- NOVO: Controla os jogos de fora por lesão
-    int jogosCastigo = 0; // <-- NOVO: Controla os jogos de fora por castigo
+    int jogosLesao = 0;
+    int jogosCastigo = 0;
+    bool jogouHoje = false;
+    int semanasTreino = 0;
 };
 
+struct Tatica_Plantel {
+    Jogador* jogadores = nullptr; // <-- CRUCIAL
+    int capacidade = 0;
+    int totalAtual = 0;
+};
 
 struct Equipa {
     string nome;
-    string* plantel = nullptr;    // <-- INICIALIZAR A NULLPTR
+    Tatica_Plantel* plantel = nullptr;    // <-- INICIALIZAR A NULLPTR
     int nJogadores = 0;           // <-- INICIALIZAR A ZERO
     int pontos = 0;               // <-- INICIALIZAR A ZERO
     int capacidadeLT = 0;
@@ -33,13 +41,11 @@ struct Equipa {
     Jogador* ListaTransf = nullptr; // <-- INICIALIZAR A NULLPTR
 };
 
+//implementação rápida do que foi pedido pelo professor
+typedef Tatica_Plantel Plantel;
+typedef Tatica_Plantel Tatica;
 
-struct Plantel {
-    Jogador* jogadores = nullptr; // <-- CRUCIAL
-    int capacidade = 0;
-    int totalAtual = 0;
-};
-
+bool numeroJaExiste(const Tatica_Plantel& p, int num, int indiceIgnorado = -1);
 int gerarAleatorio(int min, int max);
 string* carregarNomes(string filename, int& totalNomes);
 void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes);
@@ -47,4 +53,5 @@ void libertarMemoria(Plantel& p, string* listaNomes);
 void exibirPlantel(const Plantel& p);
 
 
-#endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_INICICALIZAÇÃO_PLANTEL_EDA_FC_H*/
+
+#endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_CORE_H

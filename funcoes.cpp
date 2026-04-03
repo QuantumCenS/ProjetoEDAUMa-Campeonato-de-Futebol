@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <fstream>
 #include <ctime>
@@ -29,7 +30,7 @@ bool numeroJaExiste2(Tatica& t, int num) {
         if (t.jogadores[i].numero == num) return true;
     }
     return false;
-}*/
+}#1#
 
 string* carregarNomes(string filename, int& totalNomes) {
     ifstream file(filename);
@@ -44,7 +45,7 @@ string* carregarNomes(string filename, int& totalNomes) {
     string* nomes = new string[totalNomes];
     file.clear();
     file.seekg(0);
-    
+
     int i = 0;
     while (getline(file, linha)) {
         if (!linha.empty()) {
@@ -63,7 +64,7 @@ string* carregarNomes(string filename, int& totalNomes) {
         }
     }
     return false;
-}*/
+}#1#
 
 /*Jogador encontrarMelhorDisponivel(const Plantel& p, const Tatica& t, Posicao pos) {
     Jogador melhor;
@@ -108,14 +109,14 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
     for (int i = 0; i < 4; i++) { // Para cada posição (GR, DEF, MED, AVA)
         for (int j = 0; j < quantidades[i]; j++) {
             Jogador& novo = p.jogadores[p.totalAtual];
-            
+
             novo.nome = listaNomes[gerarAleatorio(0, totalNomes - 1)];
             novo.pos = posicoes[i];
             novo.idade = gerarAleatorio(17, 38);
             novo.probLesao = gerarAleatorio(0, 15);
             novo.probCastigo = gerarAleatorio(0, 20);
             novo.qualidade = gerarAleatorio(0, 100);
-            
+
             // Gerar número único para a camisola
             int num;
             do {
@@ -161,17 +162,17 @@ void inicializarTatica(Tatica& t, const Plantel& p) {
 
 void exibirPlantel(const Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
-    
+
     cout << "========================================================================\n";
     cout << "PLANTEL GERADO - Capacidade: " << p.capacidade << "\n";
     cout << "========================================================================\n";
     cout << "NUM | POS | IDADE | QUAL | LESAO | CAST | NOME\n";
     cout << "------------------------------------------------------------------------\n";
-    
+
     for (int i = 0; i < p.totalAtual; i++) {
         Jogador& j = p.jogadores[i];
-        printf("%-3d | %-3s | %-5d | %-4d | %-4d%% | %-3d%% | %s\n", 
-               j.numero, posTxt[j.pos], j.idade, j.qualidade, 
+        printf("%-3d | %-3s | %-5d | %-4d | %-4d%% | %-3d%% | %s\n",
+               j.numero, posTxt[j.pos], j.idade, j.qualidade,
                j.probLesao, j.probCastigo, j.nome.c_str());
     }
     cout << "========================================================================\n";
@@ -205,7 +206,7 @@ void libertarMemoria(Plantel& p, string* listaNomes) {
 void listaTranf(Equipa& e) {
     e.capacidadeLT = 100;
     e.totalLT = 0;
-    e.ListaTransf = new Jogador[e.capacidadeLT];                 //array duinamico do tipo jogador 
+    e.ListaTransf = new Jogador[e.capacidadeLT];                 //array duinamico do tipo jogador
 
 
 }
@@ -288,6 +289,7 @@ void OrdenarPorChegadaLT(Equipa& e) {
         }
     }
 
-}*/
+}#1#
+*/
 
 

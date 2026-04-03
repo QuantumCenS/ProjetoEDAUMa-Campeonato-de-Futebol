@@ -19,4 +19,7 @@ add_executable(ProjetoEDAUMa_Campeonato_de_Futebol
         Lista_Transferências.h
         Castigados_Lesionados.cpp
         Castigados_Lesionados.h
-        menu.h)
+        menu.h
+        menu.cpp
+        jogo.cpp
+        core.cpp)

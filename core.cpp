@@ -1,25 +1,45 @@
-/*
 //
-// Created by Sergio on 3/20/2026.
+// Created by Sergio on 4/3/2026.
 //
 
-#include "Inicializacao_Plantel_EDA_FC.h"
+#include "core.h"
 #include <iostream>
-#include <ctime>
-#include <cmath>
-#include "Estrutura_campeonato.h"
-#include "Castigados_Lesionados.h"
-#include "Taticas.h"
-#include "Lista_Transferências.h"
+#include <fstream>
+#include <string>
+
 
 using namespace std;
 
-bool numeroJaExiste(Plantel& p, int num) {
-    for (int i = 0; i < p.totalAtual; i++) {
-        if (p.jogadores[i].numero == num) return true;
-    }
-    return false;
+
+int gerarAleatorio(int min, int max) {
+    return min + rand() % (max - min + 1);
 }
+
+string* carregarNomes(string filename, int& totalNomes) {
+    ifstream file(filename);
+    if (!file.is_open()) return nullptr;
+
+    string linha;
+    totalNomes = 0;
+    while (getline(file, linha)) {
+        if (!linha.empty()) totalNomes++;
+    }
+
+    string* nomes = new string[totalNomes];
+    file.clear();
+    file.seekg(0);
+
+    int i = 0;
+    while (getline(file, linha)) {
+        if (!linha.empty()) {
+            nomes[i] = linha;
+            i++;
+        }
+    }
+    file.close();
+    return nomes;
+}
+
 
 bool jogadorJaConvocado(const Tatica& t, const string& nomeJogador) {
     for (int i = 0; i < t.totalAtual; i++) {
@@ -28,6 +48,22 @@ bool jogadorJaConvocado(const Tatica& t, const string& nomeJogador) {
         }
     }
     return false;
+}
+
+bool numeroJaExiste(const Plantel& p, int num, int indiceIgnorado) {
+    for (int i = 0; i < p.totalAtual; i++) {
+
+        // Se estivermos a olhar para a posição do próprio jogador que estamos a avaliar, saltamos!
+        if (i == indiceIgnorado) {
+            continue;
+        }
+
+        // Se encontrarmos o número noutro jogador, devolvemos true (já existe)
+        if (p.jogadores[i].numero == num) {
+            return true;
+        }
+    }
+    return false; // Percorreu tudo e o número está livre
 }
 
 void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
@@ -95,6 +131,3 @@ void exibirPlantel(const Plantel& p) {
 void libertarMemoria(Plantel& p, string* listaNomes) {
     delete[] p.jogadores;
 }
-*/
-
-
