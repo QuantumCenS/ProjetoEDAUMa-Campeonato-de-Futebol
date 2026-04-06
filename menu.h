@@ -7,14 +7,18 @@
 
 #include "core.h"
 #include "jogo.h"
+#include <iostream>
+#include <fstream>
 
-void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Tatica& t, string** jornadas, int totalJornadas, string* listaNomes, int totalNomes);
+using namespace std;
+
+void menuPrincipal(Equipa* liga, int totalEquipas, Tatica_Plantel& p, Tatica_Plantel& t, string** jornadas, int totalJornadas, string* listaNomes, int totalNomes, string ficheiroLoad);
 void menuOperacoesTransferencias();
 void menuOperacoesMudarPos(Tatica_Plantel& p);
 void menuOperacoesMelhorarQual(Tatica_Plantel& p);
 void menuOperacoesTatica();
-void menuOperacoesGestao(Tatica_Plantel& p, Equipa& e);
-void menuAlteracoesPlantel();
+void menuOperacoesGestao(Tatica_Plantel& p, Equipa& e, int& jornadaAtual);
+void menuAlteracoesPlantel(Tatica_Plantel& t, const Tatica_Plantel& p);
 void menuGravarEquipa();
 void menuCarregarEquipa();
 void verJornadas();

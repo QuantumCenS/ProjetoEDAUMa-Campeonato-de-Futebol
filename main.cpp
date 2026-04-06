@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char* argv[]) {
     setbuf(stdout, NULL);
     srand(time(NULL));
 
@@ -19,6 +19,11 @@ int main() {
         for (int i = 1; i < TOTAL_EQUIPAS; i++) {
             liga[i].nome = equipas[i - 1];
         }
+    }
+
+    string ficheiroLoad = "";
+    if (argc >= 2) {
+        ficheiroLoad = argv[1]; // Apanha o ficheiro escrito no terminal
     }
 
     int totalNomesDisponiveis = 0;
@@ -44,7 +49,7 @@ int main() {
     listaTranf(liga[0]);
 
     // Executa o Menu
-    menuPrincipal(liga, TOTAL_EQUIPAS, *meuTime, *meuTime2, jornadas, totalJornadas, bancoDeNomes, totalNomesDisponiveis);
+    menuPrincipal(liga, TOTAL_EQUIPAS, *meuTime, *meuTime2, jornadas, totalJornadas, bancoDeNomes, totalNomesDisponiveis, ficheiroLoad);
 
     // =========================================================================
     // LIMPEZA DE MEMÓRIA DINÂMICA (Evitar Memory Leaks)

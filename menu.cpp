@@ -3,10 +3,10 @@
 //
 #include <iostream>
 #include <limits>
+#include <fstream>
 #include "menu.h"
-#include "Inicializacao_Plantel_EDA_FC.h"
-#include "Lista_Transferências.h"
-#include "Castigados_Lesionados.h"
+#include "core.h"
+#include "jogo.h"
 
 using namespace std;
 
@@ -33,7 +33,7 @@ void definirTatica(Tatica& t, const Plantel& p, int formacaoInicial) {
     }
 }
 
-void menuOperacoesGestao(Tatica_Plantel& p, Equipa& e) {
+void menuOperacoesGestao(Tatica_Plantel& p, Equipa& e, int& jornadaAtual) {
     int opcaoGestao;
     do {
         cout << "\n========================================\n";
@@ -42,6 +42,8 @@ void menuOperacoesGestao(Tatica_Plantel& p, Equipa& e) {
         cout << "1 -> Mercado de Transferencias\n";
         cout << "2 -> Treino Epecifico: Mudar Posicao\n";
         cout << "3 -> Treino Epecifico: Melhorar Qualidade\n";
+        cout << "4 -> Gravar Estado Atual\n";
+        cout << "5 -> Carregar Estado Gravado\n";
         cout << "0 -> Voltar ao Jogo\n";
         cout << "Escolha uma opcao: ";
         cin >> opcaoGestao;
@@ -49,26 +51,28 @@ void menuOperacoesGestao(Tatica_Plantel& p, Equipa& e) {
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "[!] Opcao invalida.\n";
             continue;
         }
 
         switch (opcaoGestao) {
-            case 1:
-                ContratarJogador(p, e);
+            case 1: ContratarJogador(p, e); break;
+            case 2: menuOperacoesMudarPos(p); break;
+            case 3: menuOperacoesMelhorarQual(p); break;
+            case 4: {
+                cout << "Insira o nome do ficheiro para gravar (ex: save.txt): ";
+                string ficheiro; cin >> ficheiro;
+                if(gravarEstado(ficheiro, e, p, jornadaAtual)) cout << "[SUCESSO] Jogo gravado!\n";
+                else cout << "[ERRO] Falha ao gravar.\n";
                 break;
-            case 2:
-                menuOperacoesMudarPos(p);
+            }
+            case 5: {
+                cout << "Insira o nome do ficheiro para carregar (ex: save.txt): ";
+                string ficheiro; cin >> ficheiro;
+                if(carregarEstado(ficheiro, e, p, jornadaAtual)) cout << "[SUCESSO] Jogo carregado!\n";
+                else cout << "[ERRO] Falha ao carregar.\n";
                 break;
-            case 3:
-                menuOperacoesMelhorarQual(p);
-                break;
-            case 0:
-                cout << "A regressar ao menu principal...\n";
-                break;
-            default:
-                cout << "[!] Opcao invalida.\n";
-                break;
+            }
+            case 0: break;
         }
     } while (opcaoGestao != 0);
 }
@@ -175,18 +179,71 @@ void menuOperacoesMelhorarQual(Tatica_Plantel& p) {
     cout << "A cada jornada disputada, a sua qualidade subira em 5 pontos automaticamente.\n";
 }
 
-void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Tatica& t, string** jornadas, int totalJornadas, string* listaNomes, int totalNomes) {
+void menuAlteracoesPlantel(Tatica_Plantel& t, const Tatica_Plantel& p) {
+    const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
+    cout << "\n--- ALTERACOES MANUAIS NA TATICA ---\n";
+
+    // Mostrar jogadores do Plantel que NÃO estão na tática e estão aptos
+    cout << "\nDisponiveis no Plantel (Nao Convocados):\n";
+    cout << "Nº | Posicao | Qual | Nome\n";
+    cout << "--------------------------------------------------\n";
+    bool haAptos = false;
+    for (int i = 0; i < p.totalAtual; i++) {
+        if (!jogadorJaConvocado(t, p.jogadores[i].nome) && p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
+            printf("%-2d | %-7s | %-4d | %s\n", p.jogadores[i].numero, posTxt[p.jogadores[i].pos], p.jogadores[i].qualidade, p.jogadores[i].nome.c_str());
+            haAptos = true;
+        }
+    }
+
+    if(!haAptos) cout << "(Nao ha jogadores extra aptos disponiveis)\n";
+
+    cout << "\nInsira o numero do jogador a SAIR da tatica (ou 0 para cancelar): ";
+    int numSair; cin >> numSair;
+    if(cin.fail() || numSair == 0) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); return; }
+
+    int idxSair = -1;
+    for(int i = 0; i < t.totalAtual; i++) if(t.jogadores[i].numero == numSair) idxSair = i;
+    if(idxSair == -1) { cout << "[ERRO] Jogador nao encontrado na tatica atual.\n"; return; }
+
+    cout << "Insira o numero do jogador do PLANTEL a ENTRAR: ";
+    int numEntrar; cin >> numEntrar;
+    if(cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); return; }
+
+    int idxEntrar = -1;
+    for(int i = 0; i < p.totalAtual; i++) if(p.jogadores[i].numero == numEntrar) idxEntrar = i;
+    if(idxEntrar == -1) { cout << "[ERRO] Jogador nao encontrado no plantel.\n"; return; }
+
+    if(p.jogadores[idxEntrar].jogosLesao > 0 || p.jogadores[idxEntrar].jogosCastigo > 0) {
+        cout << "[ERRO] O jogador selecionado esta lesionado ou castigado e nao pode jogar!\n"; return;
+    }
+
+    // Fazemos a substituição diretamente na Tática
+    string nomeSair = t.jogadores[idxSair].nome;
+    t.jogadores[idxSair] = p.jogadores[idxEntrar];
+
+    cout << "\n[SUCESSO] O jogador " << p.jogadores[idxEntrar].nome << " entrou no lugar de " << nomeSair << " para esta partida!\n";
+}
+
+
+void menuPrincipal(Equipa* liga, int totalEquipas, Tatica_Plantel& p, Tatica_Plantel& t, string** jornadas, int totalJornadas, string* listaNomes, int totalNomes, string ficheiroLoad) {
     char opcao;
     bool campeonatoAtivo = true;
     int jornadaAtual = 1;
+
     string ultimoResultado = ""; // Guarda o texto do resultado anterior
 
     Equipa& edaFC = liga[0];
 
-    // ANTES: inicializarTatica(t, p, 0);
-    // AGORA: usamos a nossa função robusta
     definirTatica(t, p, 0);
 
+    // Carregar jogo pela linha de comandos se o utilizador enviou um argumento!
+    if (!ficheiroLoad.empty()) {
+        if (carregarEstado(ficheiroLoad, edaFC, p, jornadaAtual)) {
+            cout << "\n[!] Estado carregado com sucesso a partir de: " << ficheiroLoad << "\n";
+        } else {
+            cout << "\n[ERRO] Nao foi possivel carregar o ficheiro: " << ficheiroLoad << ". A iniciar novo jogo.\n";
+        }
+    }
 
     while (campeonatoAtivo) {
         // --- CONDIÇÃO DE FIM DE CAMPEONATO ---
@@ -222,7 +279,7 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Tatica& t, string
         exibirCastigadosLesionados(p);
         exibirListaTransf(edaFC);
 
-        cout << "\n(s)seguinte (o)coes (q)sair: ";
+        cout << "\n(s)seguinte (a)lteracoes (o)coes (q)sair: ";
         cin >> opcao;
 
         switch (opcao) {
@@ -254,10 +311,14 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Tatica& t, string
                     adicionarJogLT(edaFC, p, listaNomes, totalNomes);
                 }
                 break;
+            case 'a':
+            case 'A':
+                menuAlteracoesPlantel(t, p);
+                break;
 
             case 'o':
             case 'O':
-                menuOperacoesGestao(p, edaFC);
+                menuOperacoesGestao(p, edaFC, jornadaAtual);
                 break;
 
             case 'q':
@@ -290,10 +351,6 @@ void menuOperacoesMelhorarQual() {
 
 void menuOperacoesTatica() {
     cout << "[Em construcao] Menu Tatica...\n";
-}
-
-void menuAlteracoesPlantel() {
-    cout << "[Em construcao] Menu Alteracoes Plantel...\n";
 }
 
 void menuGravarEquipa() {

@@ -197,28 +197,36 @@ void simularIncidentesPartida(Tatica& t, Plantel& p) {
     if (!houveSubs) cout << "Nenhuma\n";
 }
 
-void exibirCastigadosLesionados(const Plantel& p) {
+void exibirCastigadosLesionados(const Tatica_Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
     cout << "\nCastigados:\n";
-    cout << "Nome                 | N  | Posicao | Idade | ProbLesao | ProbCastigo | Qualidade | JogosCastigo\n";
-    cout << "------------------------------------------------------------------------------------------------\n";
+    printf("%-20s | %-4s | %-7s | %-5s | %-9s | %-11s | %-9s | %-14s | %s\n",
+           "Nome", "Nº", "Posicao", "Idade", "ProbLesao", "ProbCastigo", "Qualidade", "JogosRestantes", "Dias-Treino");
+    cout << "-----------------------------------------------------------------------------------------------------------------------\n";
     for (int i = 0; i < p.totalAtual; i++) {
         if (p.jogadores[i].jogosCastigo > 0) {
             Jogador& j = p.jogadores[i];
-            printf("%-20s | %-2d | %-7s | %-5d | %-8d%% | %-10d%% | %-9d | %d\n",
-                   j.nome.c_str(), j.numero, posTxt[j.pos], j.idade, j.probLesao, j.probCastigo, j.qualidade, j.jogosCastigo);
+            string lesaoStr = to_string(j.probLesao) + "%";
+            string castigoStr = to_string(j.probCastigo) + "%";
+
+            printf("%-20s | %-4d | %-7s | %-5d | %-9s | %-11s | %-9d | %-14d | %d\n",
+                   j.nome.c_str(), j.numero, posTxt[j.pos], j.idade, lesaoStr.c_str(), castigoStr.c_str(), j.qualidade, j.jogosCastigo, j.semanasTreino);
         }
     }
 
     cout << "\nLesionados:\n";
-    cout << "Nome                 | N  | Posicao | Idade | ProbLesao | ProbCastigo | Qualidade | JogosLesao\n";
-    cout << "------------------------------------------------------------------------------------------------\n";
+    printf("%-20s | %-4s | %-7s | %-5s | %-9s | %-11s | %-9s | %s\n",
+           "Nome", "Nº", "Posicao", "Idade", "ProbLesao", "ProbCastigo", "Qualidade", "JogosRestantes");
+    cout << "----------------------------------------------------------------------------------------------------------\n";
     for (int i = 0; i < p.totalAtual; i++) {
         if (p.jogadores[i].jogosLesao > 0) {
             Jogador& j = p.jogadores[i];
-            printf("%-20s | %-2d | %-7s | %-5d | %-8d%% | %-10d%% | %-9d | %d\n",
-                   j.nome.c_str(), j.numero, posTxt[j.pos], j.idade, j.probLesao, j.probCastigo, j.qualidade, j.jogosLesao);
+            string lesaoStr = to_string(j.probLesao) + "%";
+            string castigoStr = to_string(j.probCastigo) + "%";
+
+            printf("%-20s | %-4d | %-7s | %-5d | %-9s | %-11s | %-9d | %d\n",
+                   j.nome.c_str(), j.numero, posTxt[j.pos], j.idade, lesaoStr.c_str(), castigoStr.c_str(), j.qualidade, j.jogosLesao);
         }
     }
 }
@@ -562,3 +570,70 @@ void ContratarJogador(Tatica_Plantel& p, Equipa& e) {
     OrdenarPorPos(p.jogadores, p.totalAtual);
     OrdenarPorPos(e.ListaTransf, e.totalLT);
 }
+
+bool gravarEstado(const string& filename, const Equipa& e, const Tatica_Plantel& p, int jornadaAtual) {
+    ofstream out(filename);
+    if (!out.is_open()) return false;
+
+    // Guarda variáveis base
+    out << jornadaAtual << "\n" << e.pontos << "\n" << p.totalAtual << "\n";
+
+    // Guarda Plantel
+    for (int i = 0; i < p.totalAtual; i++) {
+        out << p.jogadores[i].nome << "\n";
+        out << p.jogadores[i].numero << " " << p.jogadores[i].pos << " " << p.jogadores[i].idade << " "
+            << p.jogadores[i].probLesao << " " << p.jogadores[i].probCastigo << " " << p.jogadores[i].qualidade << " "
+            << p.jogadores[i].jogosLesao << " " << p.jogadores[i].jogosCastigo << " " << p.jogadores[i].semanasTreino << "\n";
+    }
+
+    // Guarda Lista de Transferências
+    out << e.totalLT << "\n";
+    for (int i = 0; i < e.totalLT; i++) {
+        out << e.ListaTransf[i].nome << "\n";
+        out << e.ListaTransf[i].numero << " " << e.ListaTransf[i].pos << " " << e.ListaTransf[i].idade << " "
+            << e.ListaTransf[i].probLesao << " " << e.ListaTransf[i].probCastigo << " " << e.ListaTransf[i].qualidade << " "
+            << e.ListaTransf[i].jogosLesao << " " << e.ListaTransf[i].jogosCastigo << " " << e.ListaTransf[i].semanasTreino << "\n";
+    }
+
+    out.close();
+    return true;
+}
+
+bool carregarEstado(const string& filename, Equipa& e, Tatica_Plantel& p, int& jornadaAtual) {
+    ifstream in(filename);
+    if (!in.is_open()) return false;
+
+    in >> jornadaAtual >> e.pontos >> p.totalAtual;
+    in.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpa a quebra de linha
+
+    for (int i = 0; i < p.totalAtual; i++) {
+        getline(in, p.jogadores[i].nome);
+        int posInt;
+        in >> p.jogadores[i].numero >> posInt >> p.jogadores[i].idade
+           >> p.jogadores[i].probLesao >> p.jogadores[i].probCastigo >> p.jogadores[i].qualidade
+           >> p.jogadores[i].jogosLesao >> p.jogadores[i].jogosCastigo >> p.jogadores[i].semanasTreino;
+
+        p.jogadores[i].pos = static_cast<Posicao>(posInt);
+        p.jogadores[i].jogouHoje = false;
+        in.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    in >> e.totalLT;
+    in.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (int i = 0; i < e.totalLT; i++) {
+        getline(in, e.ListaTransf[i].nome);
+        int posInt;
+        in >> e.ListaTransf[i].numero >> posInt >> e.ListaTransf[i].idade
+           >> e.ListaTransf[i].probLesao >> e.ListaTransf[i].probCastigo >> e.ListaTransf[i].qualidade
+           >> e.ListaTransf[i].jogosLesao >> e.ListaTransf[i].jogosCastigo >> e.ListaTransf[i].semanasTreino;
+
+        e.ListaTransf[i].pos = static_cast<Posicao>(posInt);
+        e.ListaTransf[i].jogouHoje = false;
+        in.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+
+    in.close();
+    return true;
+}
+

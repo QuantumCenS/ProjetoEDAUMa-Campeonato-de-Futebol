@@ -49,4 +49,7 @@ void ContratarJogador(Tatica_Plantel& p, Equipa& e);
 int ContarJogNumaPos(Tatica_Plantel& p, int j);
 bool PodeContratarParaPosicao(Tatica_Plantel& p, int j);
 
+bool gravarEstado(const string& filename, const Equipa& e, const Tatica_Plantel& p, int jornadaAtual);
+bool carregarEstado(const string& filename, Equipa& e, Tatica_Plantel& p, int& jornadaAtual);
+
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_JOGO_H

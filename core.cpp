@@ -105,27 +105,36 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
     }
 }
 
-void exibirPlantel(const Plantel& p) {
+void exibirPlantel(const Tatica_Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
-    cout << "========================================================================\n";
-    cout << "PLANTEL GERADO - Capacidade: " << p.capacidade << "\n";
-    cout << "========================================================================\n";
-    cout << "NUM | POS | IDADE | QUAL | LESAO | CAST | NOME\n";
-    cout << "------------------------------------------------------------------------\n";
+    cout << "=======================================================================================================\n";
+    cout << "***************************** Plantel Disponivel: *****************************************************\n";
+    cout << "=======================================================================================================\n";
+
+    // Cabeçalho alinhado com a Imagem 2
+    printf("%-20s | %-4s | %-7s | %-5s | %-9s | %-11s | %-9s | %s\n",
+           "Nome", "Nº", "Posicao", "Idade", "ProbLesao", "ProbCastigo", "Qualidade", "Dias-Treino");
+    cout << "-------------------------------------------------------------------------------------------------------\n";
 
     for (int i = 0; i < p.totalAtual; i++) {
         Jogador& j = p.jogadores[i];
-        printf("%-3d | %-3s | %-5d | %-4d | %-4d%% | %-3d%% | %s\n",
-        j.numero,
-        posTxt[j.pos],
-        j.idade,
-        j.qualidade,
-        j.probLesao,
-        j.probCastigo,
-        j.nome.c_str());
+
+        // Formatar as percentagens
+        string lesaoStr = to_string(j.probLesao) + "%";
+        string castigoStr = to_string(j.probCastigo) + "%";
+
+        printf("%-20s | %-4d | %-7s | %-5d | %-9s | %-11s | %-9d | %d\n",
+               j.nome.c_str(),
+               j.numero,
+               posTxt[j.pos],
+               j.idade,
+               lesaoStr.c_str(),
+               castigoStr.c_str(),
+               j.qualidade,
+               j.semanasTreino); // <-- AQUI ENTRA A NOSSA VARIÁVEL DE TREINO!
     }
-    cout << "========================================================================\n";
+    cout << "=======================================================================================================\n";
 }
 
 void libertarMemoria(Plantel& p, string* listaNomes) {
