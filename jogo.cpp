@@ -505,7 +505,7 @@ void ContratarJogador(Tatica_Plantel& p, Equipa& e) {
 
     //Avaliar os Limites (alteraçao falada com o prof)
     int posDesejada = e.ListaTransf[indiceLT].pos;   //guarda posiçao
-    bool plantelCheio = (p.totalAtual >= 30);
+    bool plantelCheio = (p.totalAtual >= p.capacidade);
     bool posicaoCheia = !PodeContratarParaPosicao(p, posDesejada);
 
     // Decidir se será compra direta ou troca

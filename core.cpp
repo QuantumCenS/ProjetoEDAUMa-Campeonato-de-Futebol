@@ -66,15 +66,18 @@ bool numeroJaExiste(const Plantel& p, int num, int indiceIgnorado) {
     return false; // Percorreu tudo e o número está livre
 }
 
-void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
-    p.capacidade = gerarAleatorio(20, 30);
+void inicializarPlantel(Tatica_Plantel& p, string* listaNomes, int totalNomes) {
+    p.capacidade = 30;
     p.jogadores = new Jogador[p.capacidade];
     p.totalAtual = 0;
+
+    int limiteInicial = gerarAleatorio(20, 30); //Sorteia com quantos jogadores começas
 
     int nGR = 2, nDEF = 7, nMED = 7, nAVA = 4;
     int soma = nGR + nDEF + nMED + nAVA;
 
-    while (soma < p.capacidade) {
+    //Preenche apenas até ao limite sorteado (ex: 26)
+    while (soma < limiteInicial) {
         int r = gerarAleatorio(0, 3);
         if (r == 0 && nGR < 3) { nGR++; soma++; }
         else if (r == 1 && nDEF < 10) { nDEF++; soma++; }
@@ -84,7 +87,7 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
 
     int quantidades[] = { nGR, nDEF, nMED, nAVA };
     Posicao posicoes[] = { GR, DEF, MED, AVA };
-    int contadorCamisola = 1; // Variável para numerar de 1 a 30 de forma sequencial
+    int contadorCamisola = 1;
 
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < quantidades[i]; j++) {
@@ -96,9 +99,12 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
             novo.probLesao = gerarAleatorio(0, 15);
             novo.probCastigo = gerarAleatorio(0, 20);
             novo.qualidade = gerarAleatorio(0, 100);
-
-            // Regra da imagem: Número de jogadores 1-30 ordenando sequencialmente
             novo.numero = contadorCamisola++;
+
+            // Inicializamos as variáveis extra por segurança
+            novo.jogosLesao = 0;
+            novo.jogosCastigo = 0;
+            novo.semanasTreino = 0;
 
             p.totalAtual++;
         }
