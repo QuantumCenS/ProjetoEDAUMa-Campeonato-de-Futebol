@@ -1,26 +1,25 @@
-//
-// Created by Sergio on 3/12/2026.
-//
 #include <iostream>
 #include <ctime>
+#include <cstdlib>
 #include "definicoes.h"
 #include "Estrutura_campeonato.h"
 #include "Inicializacao_Plantel_EDA_FC.h"
 #include "Taticas.h"
 #include "Lista_Transferências.h"
 #include "Castigados_Lesionados.h"
+#include "Treinos.cpp" 
 
 using namespace std;
 
 int main() {
     srand(time(NULL));
-    //=======================================================================================================
+    
     const int TOTAL_EQUIPAS = 18;
 
-    // Criar o array dinâmico de 18 objetos Equipa
+   
     auto* liga = new Equipa[TOTAL_EQUIPAS];
 
-    // O índice 0 será sempre o teu EDA FC
+    // O índice 0 será sempre o EDA FC
     liga[0].nome = "EDA FC";
 
     // Carregar os nomes das outras 17 equipas a partir do ficheiro
@@ -29,52 +28,113 @@ int main() {
     for (int i = 1; i < TOTAL_EQUIPAS; i++) {
         liga[i].nome = equipas[i - 1]; // Preenche com os nomes do ficheiro
     }
-    //=======================================================================================================
+    
     int totalNomesDisponiveis = 0;
     string* bancoDeNomes = carregarNomes("nomes.txt", totalNomesDisponiveis);
 
     if (bancoDeNomes == nullptr) {
-
-        cout << "Erro crítico: Ficheiro nomes.txt não encontrado!" << endl;
-
+        cout << "Erro crítico: Ficheiro nomes.txt nao encontrado!" << endl;
         for (int i = 0; i < TOTAL_EQUIPAS; i++) {
-            // Só apaga se o plantel tiver sido alocado
             delete[] liga[i].plantel;
         }
-
         delete[] liga;
         delete[] equipas;
         return 1;
     }
 
-    Plantel meuTime;
-    Tatica meuTime2; // Isto agora vai guardar os Titulares e Suplentes!
+    Plantel minhaequipa;
+    Tatica minhaequipa2; 
+    Equipa mercadoTransferencias;
 
-    inicializarPlantel(meuTime, bancoDeNomes, totalNomesDisponiveis);
+    inicializarPlantel(minhaequipa, bancoDeNomes, totalNomesDisponiveis);
+    inicializarTatica(minhaequipa2, minhaequipa);
+    listaTranf(mercadoTransferencias);
 
-    // AGORA RECEBE O PLANTEL GERADO EM VEZ DO BANCO DE NOMES
-    inicializarTatica(meuTime2, meuTime);
+    // Apresentação inicial
+    exibirPlantel(minhaequipa);
+    exibirTatica(minhaequipa2);
 
-    exibirPlantel(meuTime);
-    exibirTatica(meuTime2);
-
-    libertarMemoria(meuTime, bancoDeNomes);
-    //=======================================================================================================
+    
     string** jornadas = gerarJornadas(liga[0], equipas);
-    int totalJornadas = (TOTAL_EQUIPAS - 1) * 2; // Calcula que são 34 (se TOTAL for 18)
+    int totalJornadas = (TOTAL_EQUIPAS - 1) * 2; // 34 jornadas
 
-    // Reparou que o seu ciclo começava em 1? Mudei para 0 para ele jogar a primeira jornada!
-    for (int i = 0; i < 34; i++) {
-        // Adicionada segurança para não ler nullptr
+    // O CICLO DO CAMPEONATO
+    for (int i = 0; i < totalJornadas; i++) {
+        cout << "\n========================================================================\n";
+        cout << "                       INICIO DA JORNADA " << i + 1 << "\n";
+        cout << "========================================================================\n";
+        
+        // Simular o jogo do EDA FC
         if (jornadas[i] != nullptr) {
             Equipa& h = encontrarEquipa(jornadas[i][0], liga, TOTAL_EQUIPAS);
             Equipa& a = encontrarEquipa(jornadas[i][1], liga, TOTAL_EQUIPAS);
             gerarResultado(h, a);
         }
+
+        // 1. Processar Treinos no fim da jornada (evolui qualidade, reduz semanas)
+        processarTreinos(meuTime);
+
+        // 2. Atualizar Lista de Transferências (2 novos jogadores por jornada)
+        adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
+
+        // 3. Menu de Gestão Pós-Jornada
+        int opcao;
+        do {
+            cout << "\n--- MENU DE GESTAO ---\n";
+            cout << "1. Ver Plantel\n";
+            cout << "2. Ver Tatica Atual\n";
+            cout << "3. Treino Especifico (Mudar Posicao / Qualidade)\n";
+            cout << "4. Ver Lista de Transferencias\n";
+            cout << "0. Avancar para a proxima jornada\n";
+            cout << "Escolha uma opcao: ";
+            cin >> opcao;
+
+            switch (opcao) {
+                case 1:
+                    exibirPlantel(minhaequipa);
+                    break;
+                case 2:
+                    exibirTatica(minhaequipa2);
+                    break;
+                case 3: {
+                    int numJogador, tipoTreino;
+                    cout << "Numero da camisola do Jogador: ";
+                    cin >> numJogador;
+                    cout << "1 - Mudar Posicao | 2 - Melhorar Qualidade: ";
+                    cin >> tipoTreino;
+
+                    if (tipoTreino == 1) {
+                        int novaPos;
+                        cout << "Nova Posicao (0-GR, 1-DEF, 2-MED, 3-AVA): ";
+                        cin >> novaPos;
+                        mudarPosicao(minhaequipa, numJogador, static_cast<Posicao>(novaPos));
+                    } else if (tipoTreino == 2) {
+                        int semanas;
+                        cout << "Quantas semanas de treino (1 a 5)? ";
+                        cin >> semanas;
+                        iniciarTreinoQualidade(minhaequipa, numJogador, semanas);
+                    } else {
+                        cout << "Opcao invalida.\n";
+                    }
+                    break;
+                }
+                case 4:
+                    exibirListaTransf(mercadoTransferencias);
+                    break;
+                case 0:
+                    cout << "A processar a proxima jornada...\n";
+                    break;
+                default:
+                    cout << "Opcao invalida.\n";
+            }
+        } while (opcao != 0); // Só avança no ciclo for quando o utilizador escolhe 0
     }
 
-    //=======================================================================================================
-    // Limpeza de Memória (com totalJornadas)
+    
+    // Limpeza de Memória FINAL (Após as 34 jornadas acabarem)
+    libertarMemoria(minhaequipa, bancoDeNomes);
+    delete[] mercadoTransferencias.ListaTransf; // Limpar a lista de transferências
+
     for (int i = 0; i < TOTAL_EQUIPAS; i++) {
         delete[] liga[i].plantel;
     }
@@ -87,41 +147,6 @@ int main() {
     delete[] liga;
     delete[] equipas;
 
-    //=======================================================================================================
-    Equipa mercadoTransferencias;
-    listaTranf(mercadoTransferencias);
-
-    // teste lista de transferencias
-    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
-    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
-    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
-    adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
-
-    exibirListaTransf(mercadoTransferencias);
-
-
-    /*cout << "0. Sair " << endl << "o. Operações EDA FC";
-
-    char choice;
-    cin >> choice;
-
-    switch (choice) {
-        case 0:
-            cout << "Até já!\n";
-            return 0;
-        case 1:
-            int choice2;
-            cin >> choice2;
-            case 0:
-                cout << "O. Sair" << endl;
-            cout << "1. Plantel" << endl;
-            cout << "2. Tatica" << endl;
-            cout << "3. Lista de Transferencias" << endl;
-            cout << "4. Lista de Castigados" << endl;
-            cout << "5. Lista de Lesionados" << endl;
-
-    }
-    */
-
+    cout << "\nCampeonato Terminado! Ate a proxima epoca.\n";
     return 0;
 }
