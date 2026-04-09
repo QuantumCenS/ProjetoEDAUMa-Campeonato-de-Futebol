@@ -18,6 +18,7 @@ struct Jogador {
     int probLesao;   // 0 a 15%
     int probCastigo; // 0 a 20%
     int qualidade;   // 0 a 100
+    int semanas_treino = 0;
 };
 
 
