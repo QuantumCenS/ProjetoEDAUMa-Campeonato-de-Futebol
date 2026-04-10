@@ -705,8 +705,7 @@ void processarMercadoGlobal(Equipa* liga, int nEquipas, string* bancoNomes, int 
             ContratarJogadorBOT(*liga[i].plantel, liga[i]);
         }
 
-        // O utilizador humano (i == 0) não faz nada aqui,
-        // porque ele vai ao mercado manualmente quando quiser através do Menu de Gestão!
+        // O utilizador humano não faz nada aqui, porque ele vai ao mercado manualmente quando quiser através do Menu de Gestão
     }
 }
 
