@@ -7,7 +7,7 @@
 #include "Taticas.h"
 #include "Lista_Transferências.h"
 #include "Castigados_Lesionados.h"
-#include "Treinos.cpp" 
+#include "Treinos.h" 
 
 using namespace std;
 
@@ -16,7 +16,7 @@ int main() {
     
     const int TOTAL_EQUIPAS = 18;
 
-   
+    // Criar o array dinâmico de 18 objetos Equipa
     auto* liga = new Equipa[TOTAL_EQUIPAS];
 
     // O índice 0 será sempre o EDA FC
@@ -28,7 +28,7 @@ int main() {
     for (int i = 1; i < TOTAL_EQUIPAS; i++) {
         liga[i].nome = equipas[i - 1]; // Preenche com os nomes do ficheiro
     }
-    
+   
     int totalNomesDisponiveis = 0;
     string* bancoDeNomes = carregarNomes("nomes.txt", totalNomesDisponiveis);
 
@@ -54,7 +54,7 @@ int main() {
     exibirPlantel(minhaequipa);
     exibirTatica(minhaequipa2);
 
-    
+   
     string** jornadas = gerarJornadas(liga[0], equipas);
     int totalJornadas = (TOTAL_EQUIPAS - 1) * 2; // 34 jornadas
 
@@ -71,13 +71,13 @@ int main() {
             gerarResultado(h, a);
         }
 
-        // 1. Processar Treinos no fim da jornada (evolui qualidade, reduz semanas)
-        processarTreinos(meuTime);
+        // Processar treinos no fim da jornada (evolui qualidade, reduz semanas)
+        processarTreinos(minhaequipa);
 
-        // 2. Atualizar Lista de Transferências (2 novos jogadores por jornada)
+        // Atualizar lista de transferências (2 novos jogadores por jornada)
         adicionarJogLT(mercadoTransferencias, bancoDeNomes, totalNomesDisponiveis);
 
-        // 3. Menu de Gestão Pós-Jornada
+        
         int opcao;
         do {
             cout << "\n--- MENU DE GESTAO ---\n";
@@ -85,6 +85,7 @@ int main() {
             cout << "2. Ver Tatica Atual\n";
             cout << "3. Treino Especifico (Mudar Posicao / Qualidade)\n";
             cout << "4. Ver Lista de Transferencias\n";
+            cout << "5. Alterar Tatica\n"; // NOVA OPÇÃO AQUI
             cout << "0. Avancar para a proxima jornada\n";
             cout << "Escolha uma opcao: ";
             cin >> opcao;
@@ -121,6 +122,10 @@ int main() {
                 case 4:
                     exibirListaTransf(mercadoTransferencias);
                     break;
+                case 5: //NOVO BLOCO AQUI
+                    alterarTatica(minhaequipa2, minhaequipa);
+                    exibirTatica(minhaequipa2); // Mostra a tática atualizada logo a seguir
+                    break;
                 case 0:
                     cout << "A processar a proxima jornada...\n";
                     break;
@@ -131,9 +136,9 @@ int main() {
     }
 
     
-    // Limpeza de Memória FINAL (Após as 34 jornadas acabarem)
+    // Limpeza de memória final (Após as 34 jornadas acabarem)
     libertarMemoria(minhaequipa, bancoDeNomes);
-    delete[] mercadoTransferencias.ListaTransf; // Limpar a lista de transferências
+    delete[] mercadoTransferencias.ListaTransf; // Não esquecer de limpar a lista de transferências
 
     for (int i = 0; i < TOTAL_EQUIPAS; i++) {
         delete[] liga[i].plantel;
