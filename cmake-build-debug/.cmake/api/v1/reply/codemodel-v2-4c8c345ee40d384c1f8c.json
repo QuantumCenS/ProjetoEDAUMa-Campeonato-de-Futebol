@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "4.1"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ProjetoEDAUMa_Campeonato_de_Futebol",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ProjetoEDAUMa_Campeonato_de_Futebol::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ProjetoEDAUMa_Campeonato_de_Futebol-Debug-0cecc857ffb4ec20bc9b.json",
+					"name" : "ProjetoEDAUMa_Campeonato_de_Futebol",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug",
+		"source" : "C:/Users/eldas/Desktop/branch_teste_4"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

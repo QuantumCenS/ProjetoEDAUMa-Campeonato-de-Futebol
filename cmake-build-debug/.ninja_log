@@ -1,0 +1,9 @@
+# ninja log v6
+4	1059	7975395557941413	CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/main.cpp.obj	2cfdf2c5869aebf1
+27	1093	7975395558166268	CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/core.cpp.obj	bd918f472da8ec9
+13	1122	7975395558027265	CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/menu.cpp.obj	68cfcdfcce606933
+21	1247	7975395558112685	CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/jogo.cpp.obj	4f10d14e4a7d8771
+1248	1412	7975395570368160	ProjetoEDAUMa_Campeonato_de_Futebol.exe	aaf75784f21e6b15
+8	1020	7975407650005563	CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/main.cpp.obj	2cfdf2c5869aebf1
+17	1065	7975407650099562	CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/menu.cpp.obj	68cfcdfcce606933
+1065	1339	7975407660582948	ProjetoEDAUMa_Campeonato_de_Futebol.exe	aaf75784f21e6b15
