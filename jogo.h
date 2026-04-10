@@ -41,6 +41,8 @@ void OrdenarPorPos(Jogador* lista, int total);
 // =======================================================
 // (A função TaparBuraco foi apagada pois foi otimizada para dentro de ContratarJogador)
 void ContratarJogador(Plantel& p, Equipa& e);
+void ContratarJogadorBOT(Plantel& p, Equipa& e);
+void processarMercadoGlobal(Equipa* liga, int nEquipas, string* bancoNomes, int nNomes);
 
 // =======================================================
 // VALIDAÇÕES DE PLANTEL

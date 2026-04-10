@@ -208,7 +208,7 @@ void menuOperacoesGestao(Plantel& t, Plantel& p, Equipa& e, int& jornadaAtual) {
         }
 
         switch (opcaoGestao) {
-            case 1: ContratarJogador(p, e); break;
+            case 1: menuOperacoesTransferencias(p,e); break;
             case 2: menuOperacoesMudarPos(p); break;
             case 3: menuOperacoesMelhorarQual(p); break;
             case 4: menuTatica(t,p); break;
@@ -444,11 +444,14 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, strin
                     ultimoResultado=gerarResultado(h,a);
 
 
+                    processarMercadoGlobal(liga, totalEquipas, listaNomes, totalNomes);
+
+
 
                     // --- 3. PREPARAR A PRÓXIMA JORNADA ---
                     atualizarRecuperacoes(p);
                     jornadaAtual++;
-                    adicionarJogLT(edaFC, p, listaNomes, totalNomes);
+
                 }
                 break;
             case 'a':
@@ -476,8 +479,30 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, strin
 
 
 
-void menuOperacoesTransferencias() {
-    cout << "[Em construcao] Menu Transferencias...\n";
+void menuOperacoesTransferencias(Plantel& p, Equipa& e) {
+    int op = -1;
+    while (op != 0) {
+        cout << "\n========================================\n";
+        cout << "       CENTRO DE TRANSFERENCIAS         \n";
+        cout << "========================================\n";
+        cout << "1 -> Visualizar Lista de Transferencias\n";
+        cout << "2 -> Contratar / Trocar Jogador\n";
+        cout << "0 -> Voltar\n";
+        cout << "Escolha uma opcao: ";
+        cin >> op;
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        if (op == 1) {
+            exibirListaTransf(e);
+        } else if (op == 2) {
+            ContratarJogador(p, e);
+        }
+    }
 }
 
 

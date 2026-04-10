@@ -1,44 +1,26 @@
 [
 {
-  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug",
-  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\funcoes.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1\\funcoes.cpp",
-  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/funcoes.cpp",
-  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/funcoes.cpp.obj"
+  "directory": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug",
+  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.2\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/eldas/Desktop/branch_teste_4/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\main.cpp.obj -c C:\\Users\\eldas\\Desktop\\branch_teste_4\\main.cpp",
+  "file": "C:/Users/eldas/Desktop/branch_teste_4/main.cpp",
+  "output": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/main.cpp.obj"
 },
 {
-  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug",
-  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\main.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1\\main.cpp",
-  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/main.cpp",
-  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/main.cpp.obj"
+  "directory": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug",
+  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.2\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/eldas/Desktop/branch_teste_4/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\menu.cpp.obj -c C:\\Users\\eldas\\Desktop\\branch_teste_4\\menu.cpp",
+  "file": "C:/Users/eldas/Desktop/branch_teste_4/menu.cpp",
+  "output": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/menu.cpp.obj"
 },
 {
-  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug",
-  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\Estrutura_campeonato.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1\\Estrutura_campeonato.cpp",
-  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/Estrutura_campeonato.cpp",
-  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Estrutura_campeonato.cpp.obj"
+  "directory": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug",
+  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.2\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/eldas/Desktop/branch_teste_4/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\jogo.cpp.obj -c C:\\Users\\eldas\\Desktop\\branch_teste_4\\jogo.cpp",
+  "file": "C:/Users/eldas/Desktop/branch_teste_4/jogo.cpp",
+  "output": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/jogo.cpp.obj"
 },
 {
-  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug",
-  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\Inicializacao_Plantel_EDA_FC.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1\\Inicializacao_Plantel_EDA_FC.cpp",
-  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/Inicializacao_Plantel_EDA_FC.cpp",
-  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Inicializacao_Plantel_EDA_FC.cpp.obj"
-},
-{
-  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug",
-  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\Taticas.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1\\Taticas.cpp",
-  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/Taticas.cpp",
-  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Taticas.cpp.obj"
-},
-{
-  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug",
-  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\Lista_Transferências.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1\\Lista_Transferências.cpp",
-  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/Lista_Transferências.cpp",
-  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Lista_Transferências.cpp.obj"
-},
-{
-  "directory": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug",
-  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.3\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\Castigados_Lesionados.cpp.obj -c C:\\Users\\Sergio\\CLionProjects\\ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1\\Castigados_Lesionados.cpp",
-  "file": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/Castigados_Lesionados.cpp",
-  "output": "C:/Users/Sergio/CLionProjects/ProjetoEDAUMa-Campeonato-de-FutebolV1.2.1/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/Castigados_Lesionados.cpp.obj"
+  "directory": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug",
+  "command": "C:\\PROGRA~1\\JETBRA~1\\CLION2~1.2\\bin\\mingw\\bin\\G__~1.EXE -IC:/Users/eldas/Desktop/branch_teste_4/. -g -std=gnu++14 -fdiagnostics-color=always -o CMakeFiles\\ProjetoEDAUMa_Campeonato_de_Futebol.dir\\core.cpp.obj -c C:\\Users\\eldas\\Desktop\\branch_teste_4\\core.cpp",
+  "file": "C:/Users/eldas/Desktop/branch_teste_4/core.cpp",
+  "output": "C:/Users/eldas/Desktop/branch_teste_4/cmake-build-debug/CMakeFiles/ProjetoEDAUMa_Campeonato_de_Futebol.dir/core.cpp.obj"
 }
 ]

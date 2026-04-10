@@ -6,6 +6,7 @@
 #include "core.h"
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <limits>
 
@@ -640,6 +641,73 @@ void ContratarJogador(Plantel& p, Equipa& e) {
     // Organizar plantel e LT
     OrdenarPorPos(p.jogadores, p.totalAtual);
     OrdenarPorPos(e.ListaTransf, e.totalLT);
+}
+
+
+
+void ContratarJogadorBOT(Plantel& p, Equipa& e) {
+    // Se não há jogadores no mercado, o Bot não faz nada
+    if (e.totalLT == 0) return;
+
+    // O Bot tem 50% de hipóteses de querer ir ao mercado nesta jorada
+    if (gerarAleatorio(0, 1) == 0) return;
+
+    // O Bot escolhe um jogador aleatório
+    int indiceLT = gerarAleatorio(0, e.totalLT - 1);
+    int posDesejada = e.ListaTransf[indiceLT].pos;
+
+    // Avaliar Limites
+    bool plantelCheio = (p.totalAtual >= p.capacidade);
+    bool posicaoCheia = !PodeContratarParaPosicao(p, posDesejada);
+
+    if (plantelCheio || posicaoCheia) {
+        // LÓGICA DE TROCA: O Bot precisa de encontrar alguém da mesma posição no plantel
+        int indicePlantel = -1;
+        for (int k = 0; k < p.totalAtual; k++) {
+            if (p.jogadores[k].pos == posDesejada) {
+                indicePlantel = k;
+                break; // Encontrou o jogador a dispensar(trocar)
+            }
+        }
+
+        // O Bot só efetua a troca se tiver alguém da mesma posição para sair
+        if (indicePlantel != -1) {
+            Jogador temporario = p.jogadores[indicePlantel];
+            p.jogadores[indicePlantel] = e.ListaTransf[indiceLT];
+            e.ListaTransf[indiceLT] = temporario;
+
+        }
+    } else {
+        // LÓGICA DE COMPRA DIRETA
+        p.jogadores[p.totalAtual] = e.ListaTransf[indiceLT];
+        p.totalAtual++;
+
+        // "Tapar o buraco"
+        for (int i = indiceLT; i < e.totalLT - 1; i++) {
+            e.ListaTransf[i] = e.ListaTransf[i + 1];
+        }
+        e.totalLT--;
+    }
+
+    //Manter as listas sempre organizadas por posição
+    OrdenarPorPos(p.jogadores, p.totalAtual);
+    OrdenarPorPos(e.ListaTransf, e.totalLT);
+}
+
+
+void processarMercadoGlobal(Equipa* liga, int nEquipas, string* bancoNomes, int nNomes) {
+    for (int i = 0; i < nEquipas; i++) {
+        // 1. TODAS as equipas (incluindo EDA FC) recebem 2 jogadores novos na lista
+        adicionarJogLT(liga[i], *liga[i].plantel, bancoNomes, nNomes);
+
+        // 2. Os BOTS (equipas 1 a 17) decidem se querem contratar
+        if (i > 0) {
+            ContratarJogadorBOT(*liga[i].plantel, liga[i]);
+        }
+
+        // O utilizador humano (i == 0) não faz nada aqui,
+        // porque ele vai ao mercado manualmente quando quiser através do Menu de Gestão!
+    }
 }
 
 bool gravarEstado(const string& filename, const Equipa& e, const Plantel& p, int jornadaAtual) {

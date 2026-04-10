@@ -13,7 +13,7 @@
 using namespace std;
 
 void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, string** jornadas, int totalJornadas, string* listaNomes, int totalNomes, string ficheiroLoad);
-void menuOperacoesTransferencias();
+void menuOperacoesTransferencias(Plantel& p, Equipa& e);
 void menuOperacoesMudarPos(Plantel& p);
 void menuOperacoesMelhorarQual(Plantel& p);
 void menuTatica(Plantel& t, Plantel& p);
