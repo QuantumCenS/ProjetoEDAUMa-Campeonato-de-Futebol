@@ -345,7 +345,6 @@ bool inicializarTatica(Plantel& t, Plantel& p) {
         int indiceMelhor = -1;
         int maiorQual = -1;
 
-        // procura DIRETAMENTE no plantel pelo melhor jogador que ainda não jogou
         for (int i = 0; i < p.totalAtual; i++) {
             if (!p.jogadores[i].jogouHoje && p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
                 if (p.jogadores[i].qualidade > maiorQual) {
@@ -356,19 +355,24 @@ bool inicializarTatica(Plantel& t, Plantel& p) {
         }
 
         if (indiceMelhor != -1) {
-            // marca o jogador para não ser clonado e adiciona-o à tática
             p.jogadores[indiceMelhor].jogouHoje = true;
             t.jogadores[t.totalAtual++] = p.jogadores[indiceMelhor];
             vagasVazias--;
-
             cout << "   -> Suplente Adaptado: " << p.jogadores[indiceMelhor].nome
                  << " (" << posTxt[p.jogadores[indiceMelhor].pos] << ") foi convocado para a vaga.\n";
         } else {
-            cout << "[CRITICO] Plantel dizimado! Nao ha mais jogadores disponiveis para sentar no banco.\n";
-            break; // sai do ciclo se não houver mais ninguém vivo no clube
+            break; // Sai do ciclo se não houver mais ninguém vivo no clube
         }
     }
-    return true; // tática formada com sucesso
+
+    // Obriga a ter exatamente 17 jogadores. Se não tiver, falha e força a ir ao médico
+    if (t.totalAtual < 17) {
+        cout << "\n[ERRO CRITICO] O seu plantel esta dizimado! Tem apenas " << t.totalAtual
+             << " jogadores aptos convocados.\nE obrigatorio ter 17 jogadores (11 Titulares + 6 Suplentes) para ir a jogo!\n";
+        return false;
+    }
+
+    return true; // Tática formada com sucesso com os 17 jogadores
 }
 
 /**
@@ -385,14 +389,17 @@ void exibirTatica(const Plantel& t) {
     // Imprime os primeiros 11 (Titulares)
     for (int i = 0; i < 11 && i < t.totalAtual; i++) {
         Jogador& j = t.jogadores[i];
+        string lesaoStr = to_string(j.probLesao) + "%";
+        string castigoStr = to_string(j.probCastigo) + "%";
+
         cout << left
-     << setw(20) << j.nome << " | "
-     << setw(2)  << j.numero << " | "
-     << setw(7)  << posTxt[j.pos] << " | "
-     << setw(5)  << j.idade << " | "
-     << setw(8)  << j.probLesao << "% | "
-     << setw(10) << j.probCastigo << "% | "
-     << setw(9)  << j.qualidade << "\n";
+             << setw(20) << j.nome << " | "
+             << setw(2)  << j.numero << " | "
+             << setw(7)  << posTxt[j.pos] << " | "
+             << setw(5)  << j.idade << " | "
+             << setw(9)  << lesaoStr << " | "
+             << setw(11) << castigoStr << " | "
+             << j.qualidade << "\n";
     }
 
     cout << "Suplentes:\n";
@@ -402,14 +409,17 @@ void exibirTatica(const Plantel& t) {
     // Imprime do 11 para a frente (Suplentes)
     for (int i = 11; i < t.totalAtual; i++) {
         Jogador& j = t.jogadores[i];
+        string lesaoStr = to_string(j.probLesao) + "%";
+        string castigoStr = to_string(j.probCastigo) + "%";
+
         cout << left
-     << setw(20) << j.nome << " | "
-     << setw(2)  << j.numero << " | "
-     << setw(7)  << posTxt[j.pos] << " | "
-     << setw(5)  << j.idade << " | "
-     << setw(8)  << j.probLesao << "% | "
-     << setw(10) << j.probCastigo << "% | "
-     << j.qualidade << "\n";
+             << setw(20) << j.nome << " | "
+             << setw(2)  << j.numero << " | "
+             << setw(7)  << posTxt[j.pos] << " | "
+             << setw(5)  << j.idade << " | "
+             << setw(9)  << lesaoStr << " | "
+             << setw(11) << castigoStr << " | "
+             << j.qualidade << "\n";
     }
 }
 
