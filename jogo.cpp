@@ -71,22 +71,6 @@ void baralhar(string* equipas, int nEquipas ) {
 }
 
 /**
- * procura uma equipa pelo nome dentro do array da liga
- * @param nome - nome da equipa a procurar
- * @param liga - array contendo todas as equipas do campeonato
- * @param nEquipas - numero total de equipas na liga
- * @return - referencia para a equipa encontrada ou a primeira equipa
- */
-Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas) {
-    for (int i = 0; i < nEquipas; i++) {
-        if (liga[i].nome == nome) {
-            return liga[i];
-        }
-    }
-    return liga[0]; // caso de segurança
-}
-
-/**
  * atualiza o estado fisico dos jogadores e aplica a progressao de qualidade por treino
  * @param p - referencia para o plantel a ser atualizado
  */

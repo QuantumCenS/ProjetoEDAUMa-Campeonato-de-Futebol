@@ -190,62 +190,108 @@ void menuOperacoesMelhorarQual(Plantel& p) {
  * @param p - referencia constante para o plantel global para consulta de jogadores disponiveis.
  */
 void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
-    const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
-    cout << "\n--- ALTERACOES MANUAIS NO 11 INICIAL E BANCO ---\n";
+    int escolha = -1;
+    while (escolha != 0) {
+        cout << "\n=========================================\n";
+        cout << "          GESTAO TATICA E 11            \n";
+        cout << "=========================================\n";
+        cout << "1 -> Substituir Jogadores (Titulares/Suplentes)\n";
+        cout << "2 -> Alterar Formacao (ex: 4-4-2, 4-3-3)\n";
+        cout << "0 -> Voltar ao Menu Principal\n";
+        cout << "Opcao: ";
+        cin >> escolha;
 
-    // mostra jogadores do Plantel que NÃO estão na tática e estão aptos
-    cout << "\nDisponiveis no Plantel (Nao Convocados):\n";
-    cout << left << setw(4) << "Nº" << " | "
-         << setw(7) << "Posicao" << " | "
-         << setw(4) << "Qual" << " | "
-         << "Nome\n";
-    cout << "--------------------------------------------------\n";
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
 
-    bool haAptos = false;
-    for (int i = 0; i < p.totalAtual; i++) {
-        if (!p.jogadores[i].jogouHoje && p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
+        if (escolha == 1) {
+            const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
+            cout << "\n--- SUBSTITUICOES NO 11 INICIAL E BANCO ---\n";
 
-            cout << left << setw(4) << p.jogadores[i].numero << " | "
-                 << setw(7) << posTxt[p.jogadores[i].pos] << " | "
-                 << setw(4) << p.jogadores[i].qualidade << " | "
-                 << p.jogadores[i].nome << "\n";
-            haAptos = true;
+            cout << "\nDisponiveis no Plantel (Nao Convocados):\n";
+            cout << left << setw(4) << "Nº" << " | " << setw(7) << "Posicao" << " | " << setw(4) << "Qual" << " | " << "Nome\n";
+            cout << "--------------------------------------------------\n";
+
+            bool haAptos = false;
+            for (int i = 0; i < p.totalAtual; i++) {
+                if (!p.jogadores[i].jogouHoje && p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
+                    cout << left << setw(4) << p.jogadores[i].numero << " | "
+                         << setw(7) << posTxt[p.jogadores[i].pos] << " | "
+                         << setw(4) << p.jogadores[i].qualidade << " | "
+                         << p.jogadores[i].nome << "\n";
+                    haAptos = true;
+                }
+            }
+
+            if(!haAptos) cout << "(Nao ha jogadores extra aptos disponiveis)\n";
+
+            cout << "\nInsira o numero do jogador a SAIR da tatica (ou 0 para cancelar): ";
+            int numSair; cin >> numSair;
+            if(cin.fail() || numSair == 0) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); continue; }
+
+            int idxSair = -1;
+            for(int i = 0; i < t.totalAtual; i++) if(t.jogadores[i].numero == numSair) idxSair = i;
+            if(idxSair == -1) { cout << "[ERRO] Jogador nao encontrado na tatica atual.\n"; continue; }
+
+            cout << "Insira o numero do jogador do PLANTEL a ENTRAR: ";
+            int numEntrar; cin >> numEntrar;
+            if(cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); continue; }
+
+            int idxEntrar = -1;
+            for(int i = 0; i < p.totalAtual; i++) if(p.jogadores[i].numero == numEntrar) idxEntrar = i;
+
+            if(idxEntrar == -1) { cout << "[ERRO] Jogador nao encontrado no plantel.\n"; continue; }
+            if(p.jogadores[idxEntrar].jogosLesao > 0 || p.jogadores[idxEntrar].jogosCastigo > 0) {
+                cout << "[ERRO] O jogador selecionado esta lesionado ou castigado e nao pode jogar!\n"; continue;
+            }
+            if(p.jogadores[idxEntrar].jogouHoje) {
+                cout << "[ERRO] O jogador selecionado ja esta convocado na tatica atual!\n"; continue;
+            }
+
+            // Fazemos a substituição diretamente na Tática
+            string nomeSair = t.jogadores[idxSair].nome;
+            t.jogadores[idxSair] = p.jogadores[idxEntrar];
+            t.jogadores[idxSair].jogouHoje = true;
+
+            cout << "\n[SUCESSO] O jogador " << p.jogadores[idxEntrar].nome << " entrou no lugar de " << nomeSair << " para esta partida!\n";
+        }
+        else if (escolha == 2) {
+            // Salta o menu intermédio e pede a tática diretamente
+            bool taticaValida = false;
+
+            // Grava a tática antiga em caso de erro
+            int defBkp = t.tatica[1], medBkp = t.tatica[2], avaBkp = t.tatica[3];
+
+            while (!taticaValida) {
+                cout << "\n--- ALTERAR FORMACAO ---\n";
+                cout << "Insira o numero de Defesas (Min 3): "; cin >> t.tatica[1];
+                cout << "Insira o numero de Medios (Min 2): "; cin >> t.tatica[2];
+                cout << "Insira o numero de Avancados (Min 1): "; cin >> t.tatica[3];
+
+                int totalJogadores = 1 + t.tatica[1] + t.tatica[2] + t.tatica[3]; // Guarda-redes é sempre 1
+                if (t.tatica[1] < 3 || t.tatica[2] < 2 || t.tatica[3] < 1 || totalJogadores != 11) {
+                    cout << "[ERRO] Tatica invalida! Os jogadores de campo tem de somar 10 e respeitar os minimos.\n";
+                } else {
+                    taticaValida = true;
+                }
+            }
+
+            // Tenta inicializar a nova tática
+            if (inicializarTatica(t, (Plantel&)p)) {
+                cout << "[SUCESSO] Nova formacao aplicada e plantel convocado automaticamente.\n";
+            } else {
+                // Se falhar (ex: escolheu 4 avançados mas só tem 2 aptos), reverte para a formação anterior
+                t.tatica[1] = defBkp;
+                t.tatica[2] = medBkp;
+                t.tatica[3] = avaBkp;
+                inicializarTatica(t, (Plantel&)p);
+                cout << "[AVISO] Formacao cancelada. A sua equipa manteve a tatica anterior.\n";
+            }
         }
     }
-
-    if(!haAptos) cout << "(Nao ha jogadores extra aptos disponiveis)\n";
-
-    cout << "\nInsira o numero do jogador a SAIR da tatica (ou 0 para cancelar): ";
-    int numSair; cin >> numSair;
-    if(cin.fail() || numSair == 0) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); return; }
-
-    int idxSair = -1;
-    for(int i = 0; i < t.totalAtual; i++) if(t.jogadores[i].numero == numSair) idxSair = i;
-    if(idxSair == -1) { cout << "[ERRO] Jogador nao encontrado na tatica atual.\n"; return; }
-
-    cout << "Insira o numero do jogador do PLANTEL a ENTRAR: ";
-    int numEntrar; cin >> numEntrar;
-    if(cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); return; }
-
-    int idxEntrar = -1;
-    for(int i = 0; i < p.totalAtual; i++) if(p.jogadores[i].numero == numEntrar) idxEntrar = i;
-
-    if(idxEntrar == -1) { cout << "[ERRO] Jogador nao encontrado no plantel.\n"; return; }
-    if(p.jogadores[idxEntrar].jogosLesao > 0 || p.jogadores[idxEntrar].jogosCastigo > 0) {
-        cout << "[ERRO] O jogador selecionado esta lesionado ou castigado e nao pode jogar!\n"; return;
-    }
-    if(p.jogadores[idxEntrar].jogouHoje) {
-        cout << "[ERRO] O jogador selecionado ja esta convocado na tatica atual!\n"; return;
-    }
-
-    // fazemos a substituição diretamente na Tática
-    string nomeSair = t.jogadores[idxSair].nome;
-    t.jogadores[idxSair] = p.jogadores[idxEntrar];
-
-    // atualiza as flags para a nova tática
-    t.jogadores[idxSair].jogouHoje = true;
-
-    cout << "\n[SUCESSO] O jogador " << p.jogadores[idxEntrar].nome << " entrou no lugar de " << nomeSair << " para esta partida!\n";
 }
 
 /**
@@ -294,30 +340,45 @@ void menuOperacoesGestao(Equipa* liga, int totalEquipas, Partida** calendario, i
         cout << "1 -> Mercado de Transferencias\n";
         cout << "2 -> Treino Epecifico: Mudar Posicao\n";
         cout << "3 -> Treino Epecifico: Melhorar Qualidade\n";
-        cout << "4 -> Alterar Tatica Base\n";
-        cout << "5 -> Gerir lesionados e castigados\n";
-        cout << "6 -> Gravar Estado Atual (GLOBAL)\n";
+        cout << "4 -> Gerir lesionados e castigados\n"; // Antigo 5
+        cout << "5 -> Gravar Estado Atual (GLOBAL)\n";    // Antigo 6
         cout << "0 -> Voltar ao Jogo\n";
         cout << "Escolha uma opcao: ";
         cin >> opcaoGestao;
 
-        if (cin.fail()) { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); continue; }
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
 
         switch (opcaoGestao) {
-            case 1: menuOperacoesTransferencias(p, e); break;
-            case 2: menuOperacoesMudarPos(p); break;
-            case 3: menuOperacoesMelhorarQual(p); break;
-            case 4: /* Não podemos chamar o menuTatica sem o t, isso faz-se no jogo normal */ cout << "Tatica altera-se no menu do jogo!\n"; break;
-            case 5: gerirLesionadosECastigados(p); break;
-            case 6: {
+            case 1:
+                menuOperacoesTransferencias(p, e);
+                break;
+            case 2:
+                menuOperacoesMudarPos(p);
+                break;
+            case 3:
+                menuOperacoesMelhorarQual(p);
+                break;
+            case 4:
+                gerirLesionadosECastigados(p);
+                break;
+            case 5: {
                 cout << "Insira o nome do ficheiro para gravar (ex: save.txt): ";
                 string ficheiro; cin >> ficheiro;
                 if(gravarEstadoGlobal(ficheiro, liga, totalEquipas, calendario, jornadaAtual, modoDeJogo, idUser))
                     cout << "[SUCESSO] Campeonato gravado!\n";
-                else cout << "[ERRO] Falha ao gravar.\n";
+                else
+                    cout << "[ERRO] Falha ao gravar.\n";
                 break;
             }
-            case 0: break;
+            case 0:
+                break;
+            default:
+                cout << "Opcao invalida!\n";
+                break;
         }
     } while (opcaoGestao != 0);
 }
