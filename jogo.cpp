@@ -786,86 +786,247 @@ void ListarJogadorBOT(Equipa& e) {
 }
 
 /**
- * guarda todos os dados atuais do campeonato, incluindo calendário, estatísticas e plantéis, num ficheiro de texto
- * @param filename - caminho (path) e nome do ficheiro de salvaguarda
- * @param liga - array de equipas a gravar
- * @param totalEquipas - número de equipas no campeonato
- * @param calendario - matriz dinâmica com o calendário de jogos
- * @param jornadaAtual - índice da jornada em que o campeonato se encontra
- * @param modoDeJogo - modo atual (Treinador ou Global)
- * @param idUser - ID da equipa controlada pelo utilizador
- * @return - true se a gravação for bem sucedida, false caso contrário
+ * guarda o estado atual do campeonato.
+ * escolhe automaticamente o formato (Binario ou Texto) com base na extensao do ficheiro (.bin ou .txt).
+ * @param filename - nome do ficheiro (ex: save.txt ou save.bin)
+ * @param liga - array contendo todas as equipas
+ * @param totalEquipas - numero total de equipas
+ * @param calendario - matriz com o agendamento dos jogos
+ * @param jornadaAtual - numero da jornada atual
+ * @param modoDeJogo - modo de jogo ativo
+ * @param idUser - ID da equipa do utilizador
+ * @return - true se a gravacao foi bem sucedida, false caso contrario
  */
 bool gravarEstadoGlobal(const string& filename, Equipa* liga, int totalEquipas, Partida** calendario, int jornadaAtual, int modoDeJogo, int idUser) {
-    ofstream out(filename);
-    if (!out.is_open()) return false;
-    out << totalEquipas << " " << jornadaAtual << " " << modoDeJogo << " " << idUser << "\n";
-    for(int i = 0; i < 34; i++) {
-        for(int j = 0; j < 9; j++) out << calendario[i][j].idCasa << " " << calendario[i][j].idFora << " " << calendario[i][j].golosCasa << " " << calendario[i][j].golosFora << " " << calendario[i][j].realizada << "\n";
-    }
-    for(int e = 0; e < totalEquipas; e++) {
-        out << liga[e].pontos << " " << liga[e].vitorias << " " << liga[e].empates << " " << liga[e].derrotas << " " << liga[e].golosMarcados << " " << liga[e].golosSofridos << "\n";
-        Plantel& p = *liga[e].plantel;
+    // Verifica se a string termina em ".bin"
+    bool ehBinario = (filename.length() >= 4 && filename.substr(filename.length() - 4) == ".bin");
 
-        out << p.tatica[0] << " " << p.tatica[1] << " " << p.tatica[2] << " " << p.tatica[3] << "\n";
+    if (ehBinario) {
+        // GRAVAÇÃO EM MODO BINÁRIO
+        fstream fs;
+        fs.open(filename, ios::out | ios::binary);
+        if (!fs.is_open()) return false;
 
-        out << p.totalAtual << "\n";
-        for(int i = 0; i < p.totalAtual; i++) {
-            out << p.jogadores[i].nome << "\n" << p.jogadores[i].numero << " " << p.jogadores[i].pos << " " << p.jogadores[i].idade << " " << p.jogadores[i].probLesao << " " << p.jogadores[i].probCastigo << " " << p.jogadores[i].qualidade << " " << p.jogadores[i].jogosLesao << " " << p.jogadores[i].jogosCastigo << " " << p.jogadores[i].semanasTreino << "\n";
+        fs.write((char*)&totalEquipas, sizeof(int));
+        fs.write((char*)&jornadaAtual, sizeof(int));
+        fs.write((char*)&modoDeJogo, sizeof(int));
+        fs.write((char*)&idUser, sizeof(int));
+
+        for(int i = 0; i < 34; i++) {
+            fs.write((char*)calendario[i], sizeof(Partida) * 9);
         }
-        out << liga[e].totalLT << "\n";
-        for(int i = 0; i < liga[e].totalLT; i++) {
-            out << liga[e].ListaTransf[i].nome << "\n" << liga[e].ListaTransf[i].numero << " " << liga[e].ListaTransf[i].pos << " " << liga[e].ListaTransf[i].idade << " " << liga[e].ListaTransf[i].probLesao << " " << liga[e].ListaTransf[i].probCastigo << " " << liga[e].ListaTransf[i].qualidade << " " << liga[e].ListaTransf[i].jogosLesao << " " << liga[e].ListaTransf[i].jogosCastigo << " " << liga[e].ListaTransf[i].semanasTreino << "\n";
+
+        for(int e = 0; e < totalEquipas; e++) {
+            fs.write((char*)&liga[e].pontos, sizeof(int));
+            fs.write((char*)&liga[e].vitorias, sizeof(int));
+            fs.write((char*)&liga[e].empates, sizeof(int));
+            fs.write((char*)&liga[e].derrotas, sizeof(int));
+            fs.write((char*)&liga[e].golosMarcados, sizeof(int));
+            fs.write((char*)&liga[e].golosSofridos, sizeof(int));
+
+            Plantel& p = *liga[e].plantel;
+            fs.write((char*)p.tatica, sizeof(int) * 4);
+            fs.write((char*)&p.totalAtual, sizeof(int));
+
+            for(int i = 0; i < p.totalAtual; i++) {
+                int tamanhoNome = p.jogadores[i].nome.size();
+                fs.write((char*)&tamanhoNome, sizeof(int));
+                fs.write((char*)p.jogadores[i].nome.c_str(), tamanhoNome);
+
+                fs.write((char*)&p.jogadores[i].numero, sizeof(int));
+                fs.write((char*)&p.jogadores[i].pos, sizeof(Posicao));
+                fs.write((char*)&p.jogadores[i].idade, sizeof(int));
+                fs.write((char*)&p.jogadores[i].probLesao, sizeof(int));
+                fs.write((char*)&p.jogadores[i].probCastigo, sizeof(int));
+                fs.write((char*)&p.jogadores[i].qualidade, sizeof(int));
+                fs.write((char*)&p.jogadores[i].jogosLesao, sizeof(int));
+                fs.write((char*)&p.jogadores[i].jogosCastigo, sizeof(int));
+                fs.write((char*)&p.jogadores[i].jogouHoje, sizeof(bool));
+                fs.write((char*)&p.jogadores[i].semanasTreino, sizeof(int));
+            }
+
+            fs.write((char*)&liga[e].totalLT, sizeof(int));
+            for(int i = 0; i < liga[e].totalLT; i++) {
+                int tamanhoNome = liga[e].ListaTransf[i].nome.size();
+                fs.write((char*)&tamanhoNome, sizeof(int));
+                fs.write((char*)liga[e].ListaTransf[i].nome.c_str(), tamanhoNome);
+
+                fs.write((char*)&liga[e].ListaTransf[i].numero, sizeof(int));
+                fs.write((char*)&liga[e].ListaTransf[i].pos, sizeof(Posicao));
+                fs.write((char*)&liga[e].ListaTransf[i].idade, sizeof(int));
+                fs.write((char*)&liga[e].ListaTransf[i].probLesao, sizeof(int));
+                fs.write((char*)&liga[e].ListaTransf[i].probCastigo, sizeof(int));
+                fs.write((char*)&liga[e].ListaTransf[i].qualidade, sizeof(int));
+                fs.write((char*)&liga[e].ListaTransf[i].jogosLesao, sizeof(int));
+                fs.write((char*)&liga[e].ListaTransf[i].jogosCastigo, sizeof(int));
+                fs.write((char*)&liga[e].ListaTransf[i].jogouHoje, sizeof(bool));
+                fs.write((char*)&liga[e].ListaTransf[i].semanasTreino, sizeof(int));
+            }
         }
+        fs.close();
+        return true;
+    } else {
+        // GRAVAÇÃO EM MODO TEXTO
+        ofstream out(filename);
+        if (!out.is_open()) return false;
+
+        out << totalEquipas << " " << jornadaAtual << " " << modoDeJogo << " " << idUser << "\n";
+        for(int i = 0; i < 34; i++) {
+            for(int j = 0; j < 9; j++) out << calendario[i][j].idCasa << " " << calendario[i][j].idFora << " " << calendario[i][j].golosCasa << " " << calendario[i][j].golosFora << " " << calendario[i][j].realizada << "\n";
+        }
+        for(int e = 0; e < totalEquipas; e++) {
+            out << liga[e].pontos << " " << liga[e].vitorias << " " << liga[e].empates << " " << liga[e].derrotas << " " << liga[e].golosMarcados << " " << liga[e].golosSofridos << "\n";
+            Plantel& p = *liga[e].plantel;
+
+            out << p.tatica[0] << " " << p.tatica[1] << " " << p.tatica[2] << " " << p.tatica[3] << "\n";
+            out << p.totalAtual << "\n";
+            for(int i = 0; i < p.totalAtual; i++) {
+                out << p.jogadores[i].nome << "\n" << p.jogadores[i].numero << " " << p.jogadores[i].pos << " " << p.jogadores[i].idade << " " << p.jogadores[i].probLesao << " " << p.jogadores[i].probCastigo << " " << p.jogadores[i].qualidade << " " << p.jogadores[i].jogosLesao << " " << p.jogadores[i].jogosCastigo << " " << p.jogadores[i].semanasTreino << "\n";
+            }
+            out << liga[e].totalLT << "\n";
+            for(int i = 0; i < liga[e].totalLT; i++) {
+                out << liga[e].ListaTransf[i].nome << "\n" << liga[e].ListaTransf[i].numero << " " << liga[e].ListaTransf[i].pos << " " << liga[e].ListaTransf[i].idade << " " << liga[e].ListaTransf[i].probLesao << " " << liga[e].ListaTransf[i].probCastigo << " " << liga[e].ListaTransf[i].qualidade << " " << liga[e].ListaTransf[i].jogosLesao << " " << liga[e].ListaTransf[i].jogosCastigo << " " << liga[e].ListaTransf[i].semanasTreino << "\n";
+            }
+        }
+        out.close();
+        return true;
     }
-    out.close(); return true;
 }
 
 /**
- * recupera o estado de um campeonato guardado anteriormente a partir de um ficheiro de texto
+ * recupera o estado do campeonato.
+ * escolhe automaticamente a leitura (Binario ou Texto) com base na extensao (.bin ou .txt).
  * @param filename - nome do ficheiro a carregar
- * @param liga - array de equipas a preencher
- * @param totalEquipas - número de equipas esperado
- * @param calendario - matriz do calendário a preencher
- * @param jornadaAtual - referência para atualizar a jornada atual
- * @param modoDeJogo - referência para atualizar o modo de jogo
- * @param idUser - referência para atualizar o ID do utilizador
- * @return - true se o carregamento for bem sucedido, false caso contrário
+ * @param liga - array de equipas na memoria a ser preenchido
+ * @param totalEquipas - numero esperado de equipas para validacao
+ * @param calendario - matriz do calendario a preencher
+ * @param jornadaAtual - referencia a ser atualizada
+ * @param modoDeJogo - referencia a ser atualizada
+ * @param idUser - referencia a ser atualizada
+ * @return - true se a leitura foi bem sucedida
  */
 bool carregarEstadoGlobal(const string& filename, Equipa* liga, int totalEquipas, Partida** calendario, int& jornadaAtual, int& modoDeJogo, int& idUser) {
-    ifstream in(filename);
-    if (!in.is_open()) return false;
-    int lidoTotalEquipas; in >> lidoTotalEquipas >> jornadaAtual >> modoDeJogo >> idUser;
-    if (lidoTotalEquipas != totalEquipas) return false;
-    for(int i = 0; i < 34; i++) {
-        for(int j = 0; j < 9; j++) in >> calendario[i][j].idCasa >> calendario[i][j].idFora >> calendario[i][j].golosCasa >> calendario[i][j].golosFora >> calendario[i][j].realizada;
-    }
-    for(int e = 0; e < totalEquipas; e++) {
-        in >> liga[e].pontos >> liga[e].vitorias >> liga[e].empates >> liga[e].derrotas >> liga[e].golosMarcados >> liga[e].golosSofridos;
-        Plantel& p = *liga[e].plantel;
+    bool ehBinario = (filename.length() >= 4 && filename.substr(filename.length() - 4) == ".bin");
 
-        in >> p.tatica[0] >> p.tatica[1] >> p.tatica[2] >> p.tatica[3];
+    if (ehBinario) {
+        // LEITURA EM MODO BINÁRIO
+        fstream fs;
+        fs.open(filename, ios::in | ios::binary);
+        if (!fs.is_open()) return false;
 
-        in >> p.totalAtual;
-        in.ignore(numeric_limits<streamsize>::max(), '\n');
-        for(int i = 0; i < p.totalAtual; i++) {
-            getline(in, p.jogadores[i].nome);
-            int posInt;
-            in >> p.jogadores[i].numero >> posInt >> p.jogadores[i].idade >> p.jogadores[i].probLesao >> p.jogadores[i].probCastigo >> p.jogadores[i].qualidade >> p.jogadores[i].jogosLesao >> p.jogadores[i].jogosCastigo >> p.jogadores[i].semanasTreino;
-            p.jogadores[i].pos = static_cast<Posicao>(posInt);
-            p.jogadores[i].jogouHoje = false;
+        int lidoTotalEquipas;
+        fs.read((char*)&lidoTotalEquipas, sizeof(int));
+        if (lidoTotalEquipas != totalEquipas) {
+            fs.close();
+            return false;
+        }
+
+        fs.read((char*)&jornadaAtual, sizeof(int));
+        fs.read((char*)&modoDeJogo, sizeof(int));
+        fs.read((char*)&idUser, sizeof(int));
+
+        for(int i = 0; i < 34; i++) {
+            fs.read((char*)calendario[i], sizeof(Partida) * 9);
+        }
+
+        for(int e = 0; e < totalEquipas; e++) {
+            fs.read((char*)&liga[e].pontos, sizeof(int));
+            fs.read((char*)&liga[e].vitorias, sizeof(int));
+            fs.read((char*)&liga[e].empates, sizeof(int));
+            fs.read((char*)&liga[e].derrotas, sizeof(int));
+            fs.read((char*)&liga[e].golosMarcados, sizeof(int));
+            fs.read((char*)&liga[e].golosSofridos, sizeof(int));
+
+            Plantel& p = *liga[e].plantel;
+            fs.read((char*)p.tatica, sizeof(int) * 4);
+            fs.read((char*)&p.totalAtual, sizeof(int));
+
+            for(int i = 0; i < p.totalAtual; i++) {
+                int tamanhoNome;
+                fs.read((char*)&tamanhoNome, sizeof(int));
+                p.jogadores[i].nome.resize(tamanhoNome);
+                fs.read((char*)&p.jogadores[i].nome[0], tamanhoNome);
+
+                fs.read((char*)&p.jogadores[i].numero, sizeof(int));
+                fs.read((char*)&p.jogadores[i].pos, sizeof(Posicao));
+                fs.read((char*)&p.jogadores[i].idade, sizeof(int));
+                fs.read((char*)&p.jogadores[i].probLesao, sizeof(int));
+                fs.read((char*)&p.jogadores[i].probCastigo, sizeof(int));
+                fs.read((char*)&p.jogadores[i].qualidade, sizeof(int));
+                fs.read((char*)&p.jogadores[i].jogosLesao, sizeof(int));
+                fs.read((char*)&p.jogadores[i].jogosCastigo, sizeof(int));
+                fs.read((char*)&p.jogadores[i].jogouHoje, sizeof(bool));
+                fs.read((char*)&p.jogadores[i].semanasTreino, sizeof(int));
+            }
+
+            fs.read((char*)&liga[e].totalLT, sizeof(int));
+            for(int i = 0; i < liga[e].totalLT; i++) {
+                int tamanhoNome;
+                fs.read((char*)&tamanhoNome, sizeof(int));
+                liga[e].ListaTransf[i].nome.resize(tamanhoNome);
+                fs.read((char*)&liga[e].ListaTransf[i].nome[0], tamanhoNome);
+
+                fs.read((char*)&liga[e].ListaTransf[i].numero, sizeof(int));
+                fs.read((char*)&liga[e].ListaTransf[i].pos, sizeof(Posicao));
+                fs.read((char*)&liga[e].ListaTransf[i].idade, sizeof(int));
+                fs.read((char*)&liga[e].ListaTransf[i].probLesao, sizeof(int));
+                fs.read((char*)&liga[e].ListaTransf[i].probCastigo, sizeof(int));
+                fs.read((char*)&liga[e].ListaTransf[i].qualidade, sizeof(int));
+                fs.read((char*)&liga[e].ListaTransf[i].jogosLesao, sizeof(int));
+                fs.read((char*)&liga[e].ListaTransf[i].jogosCastigo, sizeof(int));
+                fs.read((char*)&liga[e].ListaTransf[i].jogouHoje, sizeof(bool));
+                fs.read((char*)&liga[e].ListaTransf[i].semanasTreino, sizeof(int));
+            }
+        }
+        fs.close();
+        return true;
+    } else {
+        // LEITURA EM MODO TEXTO
+        ifstream in(filename);
+        if (!in.is_open()) return false;
+
+        int lidoTotalEquipas;
+        in >> lidoTotalEquipas >> jornadaAtual >> modoDeJogo >> idUser;
+        if (lidoTotalEquipas != totalEquipas) return false;
+
+        for(int i = 0; i < 34; i++) {
+            for(int j = 0; j < 9; j++) in >> calendario[i][j].idCasa >> calendario[i][j].idFora >> calendario[i][j].golosCasa >> calendario[i][j].golosFora >> calendario[i][j].realizada;
+        }
+        for(int e = 0; e < totalEquipas; e++) {
+            in >> liga[e].pontos >> liga[e].vitorias >> liga[e].empates >> liga[e].derrotas >> liga[e].golosMarcados >> liga[e].golosSofridos;
+            Plantel& p = *liga[e].plantel;
+
+            in >> p.tatica[0] >> p.tatica[1] >> p.tatica[2] >> p.tatica[3];
+            in >> p.totalAtual;
+
+            // Corrige o buffer antes de ler strings com espaços
             in.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-        in >> liga[e].totalLT; in.ignore(numeric_limits<streamsize>::max(), '\n');
-        for(int i = 0; i < liga[e].totalLT; i++) {
-            getline(in, liga[e].ListaTransf[i].nome); int posInt;
-            in >> liga[e].ListaTransf[i].numero >> posInt >> liga[e].ListaTransf[i].idade >> liga[e].ListaTransf[i].probLesao >> liga[e].ListaTransf[i].probCastigo >> liga[e].ListaTransf[i].qualidade >> liga[e].ListaTransf[i].jogosLesao >> liga[e].ListaTransf[i].jogosCastigo >> liga[e].ListaTransf[i].semanasTreino;
-            liga[e].ListaTransf[i].pos = static_cast<Posicao>(posInt); liga[e].ListaTransf[i].jogouHoje = false; in.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
-    }
-    in.close(); return true;
-}
 
+            for(int i = 0; i < p.totalAtual; i++) {
+                getline(in, p.jogadores[i].nome);
+                int posInt;
+                in >> p.jogadores[i].numero >> posInt >> p.jogadores[i].idade >> p.jogadores[i].probLesao >> p.jogadores[i].probCastigo >> p.jogadores[i].qualidade >> p.jogadores[i].jogosLesao >> p.jogadores[i].jogosCastigo >> p.jogadores[i].semanasTreino;
+                p.jogadores[i].pos = static_cast<Posicao>(posInt);
+                p.jogadores[i].jogouHoje = false;
+                in.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+
+            in >> liga[e].totalLT;
+            in.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            for(int i = 0; i < liga[e].totalLT; i++) {
+                getline(in, liga[e].ListaTransf[i].nome);
+                int posInt;
+                in >> liga[e].ListaTransf[i].numero >> posInt >> liga[e].ListaTransf[i].idade >> liga[e].ListaTransf[i].probLesao >> liga[e].ListaTransf[i].probCastigo >> liga[e].ListaTransf[i].qualidade >> liga[e].ListaTransf[i].jogosLesao >> liga[e].ListaTransf[i].jogosCastigo >> liga[e].ListaTransf[i].semanasTreino;
+                liga[e].ListaTransf[i].pos = static_cast<Posicao>(posInt);
+                liga[e].ListaTransf[i].jogouHoje = false;
+                in.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+        }
+        in.close();
+        return true;
+    }
+}
 
 // o novo gerador de calendário (substitui o gerarJornadas antigo)
 /**

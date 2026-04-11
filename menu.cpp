@@ -116,8 +116,16 @@ void menuTatica(Plantel& t, Plantel& p) {
                 if (t.tatica[1] < 3 || t.tatica[2] < 2 || t.tatica[3] < 1 || totalJogadores != 11) {
                     cout << "Tatica invalida! Tem de somar 11 jogadores e respeitar os minimos.\n";
                 } else taticaValida = true;
+
             }
             sucesso = inicializarTatica(t, p);
+
+            if (sucesso) {
+                p.tatica[0] = 1;
+                p.tatica[1] = t.tatica[1];
+                p.tatica[2] = t.tatica[2];
+                p.tatica[3] = t.tatica[3];
+            }
         } else if (opcao == 2) {
             gerirLesionadosECastigados(p);
             sucesso = inicializarTatica(t, p);
@@ -187,9 +195,9 @@ void menuOperacoesMelhorarQual(Plantel& p) {
  * gere a interface para a realizacao de substituicoes manuais entre a tatica convocada e os jogadores aptos no banco/plantel.
  * garante que os jogadores que entram nao estao lesionados, castigados ou ja a jogar na tatica atual.
  * @param t - referencia para a tatica ativa (11 inicial e banco) onde a substituicao sera efetuada.
- * @param p - referencia constante para o plantel global para consulta de jogadores disponiveis.
+ * @param p - referencia para o plantel global para consulta de jogadores disponiveis.
  */
-void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
+void menuAlteracoesPlantel(Plantel& t, Plantel& p) {
     int escolha = -1;
     while (escolha != 0) {
         cout << "\n=========================================\n";
@@ -259,10 +267,7 @@ void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
             cout << "\n[SUCESSO] O jogador " << p.jogadores[idxEntrar].nome << " entrou no lugar de " << nomeSair << " para esta partida!\n";
         }
         else if (escolha == 2) {
-            // Salta o menu intermédio e pede a tática diretamente
             bool taticaValida = false;
-
-            // Grava a tática antiga em caso de erro
             int defBkp = t.tatica[1], medBkp = t.tatica[2], avaBkp = t.tatica[3];
 
             while (!taticaValida) {
@@ -271,7 +276,7 @@ void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
                 cout << "Insira o numero de Medios (Min 2): "; cin >> t.tatica[2];
                 cout << "Insira o numero de Avancados (Min 1): "; cin >> t.tatica[3];
 
-                int totalJogadores = 1 + t.tatica[1] + t.tatica[2] + t.tatica[3]; // Guarda-redes é sempre 1
+                int totalJogadores = 1 + t.tatica[1] + t.tatica[2] + t.tatica[3];
                 if (t.tatica[1] < 3 || t.tatica[2] < 2 || t.tatica[3] < 1 || totalJogadores != 11) {
                     cout << "[ERRO] Tatica invalida! Os jogadores de campo tem de somar 10 e respeitar os minimos.\n";
                 } else {
@@ -279,15 +284,20 @@ void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
                 }
             }
 
-            // Tenta inicializar a nova tática
-            if (inicializarTatica(t, (Plantel&)p)) {
+            if (inicializarTatica(t, p)) {
+                // ---> ADICIONA ESTAS 4 LINHAS AQUI <---
+                // Garante que o plantel principal (que é gravado no ficheiro) memoriza a mudança!
+                p.tatica[0] = 1;
+                p.tatica[1] = t.tatica[1];
+                p.tatica[2] = t.tatica[2];
+                p.tatica[3] = t.tatica[3];
+
                 cout << "[SUCESSO] Nova formacao aplicada e plantel convocado automaticamente.\n";
             } else {
-                // Se falhar (ex: escolheu 4 avançados mas só tem 2 aptos), reverte para a formação anterior
                 t.tatica[1] = defBkp;
                 t.tatica[2] = medBkp;
                 t.tatica[3] = avaBkp;
-                inicializarTatica(t, (Plantel&)p);
+                inicializarTatica(t, p);
                 cout << "[AVISO] Formacao cancelada. A sua equipa manteve a tatica anterior.\n";
             }
         }
@@ -366,7 +376,7 @@ void menuOperacoesGestao(Equipa* liga, int totalEquipas, Partida** calendario, i
                 gerirLesionadosECastigados(p);
                 break;
             case 5: {
-                cout << "Insira o nome do ficheiro para gravar (ex: save.txt): ";
+                cout << "Insira o nome do ficheiro para gravar (ex: save.txt, save.bin): ";
                 string ficheiro; cin >> ficheiro;
                 if(gravarEstadoGlobal(ficheiro, liga, totalEquipas, calendario, jornadaAtual, modoDeJogo, idUser))
                     cout << "[SUCESSO] Campeonato gravado!\n";
@@ -405,6 +415,19 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
     if (!ficheiroLoad.empty()) {
         if (carregarEstadoGlobal(ficheiroLoad, liga, totalEquipas, calendario, jornadaAtual, modoDeJogo, idUser)) {
             cout << "\n[!] Campeonato carregado com sucesso!\n";
+
+            if (modoDeJogo == 1) {
+                // Desreferenciamos o ponteiro com o '*'
+                Plantel& plantelCarregado = *liga[idUser].plantel;
+
+                t.tatica[0] = plantelCarregado.tatica[0];
+                t.tatica[1] = plantelCarregado.tatica[1];
+                t.tatica[2] = plantelCarregado.tatica[2];
+                t.tatica[3] = plantelCarregado.tatica[3];
+
+                inicializarTatica(t, plantelCarregado);
+            }
+
         } else cout << "\n[ERRO] Falha ao carregar. A iniciar novo jogo.\n";
     }
 
@@ -435,7 +458,17 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
             cout << "Ficheiro a carregar: "; string ficheiro; cin >> ficheiro;
             if (carregarEstadoGlobal(ficheiro, liga, totalEquipas, calendario, jornadaAtual, modoDeJogo, idUser)) {
                 cout << "[!] Sucesso!\n";
-                if (modoDeJogo == 1) inicializarTatica(t, *liga[idUser].plantel);
+                if (modoDeJogo == 1) {
+                    Plantel& plantelCarregado = *liga[idUser].plantel;
+
+                    t.tatica[0] = plantelCarregado.tatica[0];
+                    t.tatica[1] = plantelCarregado.tatica[1];
+                    t.tatica[2] = plantelCarregado.tatica[2];
+                    t.tatica[3] = plantelCarregado.tatica[3];
+
+                    inicializarTatica(t, plantelCarregado);
+                }
+                // -----------------------------------
             } else { cout << "[ERRO] Cancelado. A fechar.\n"; return; }
         } else return;
     }
@@ -532,7 +565,7 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
                 } else { cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n'); }
             }
             else if (op == 'g' || op == 'G') {
-                cout << "Ficheiro para gravar (ex: save.txt): "; string f; cin >> f;
+                cout << "Ficheiro para gravar (ex: save.txt, save.bin): "; string f; cin >> f;
                 if(gravarEstadoGlobal(f, liga, totalEquipas, calendario, jornadaAtual, modoDeJogo, idUser)) cout << "[SUCESSO] Gravado!\n";
                 else cout << "[ERRO] Falha.\n";
             }

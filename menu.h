@@ -19,7 +19,7 @@ void menuOperacoesMudarPos(Plantel& p);
 void menuOperacoesMelhorarQual(Plantel& p);
 void menuTatica(Plantel& t, Plantel& p);
 void menuOperacoesGestao(Equipa* liga, int totalEquipas, Partida** calendario, int& modoDeJogo, int& idUser, int& jornadaAtual, Plantel& t);
-void menuAlteracoesPlantel(Plantel& t, const Plantel& p);
+void menuAlteracoesPlantel(Plantel& t, Plantel& p);
 void gerirLesionadosECastigados(Plantel& p);
 
 #endif //PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_MENU_H
