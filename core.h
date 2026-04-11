@@ -1,7 +1,3 @@
-//
-// Created by Sergio on 4/3/2026.
-//
-
 #ifndef PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_CORE_H
 #define PROJETOEDAUMA_CAMPEONATO_DE_FUTEBOL_CORE_H
 #include <iostream>
@@ -9,8 +5,10 @@
 
 using namespace std;
 
+// NUMERA AS POSICOES PARA ORGANIZACAO
 enum Posicao { GR = 0, DEF = 1, MED = 2, AVA = 3 };
 
+// STRUCTS PRECISAS PARA O PROJETO
 struct Jogador {
     string nome;
     int numero;
@@ -26,7 +24,7 @@ struct Jogador {
 };
 
 struct Plantel {
-    Jogador* jogadores = nullptr; // <-- CRUCIAL
+    Jogador* jogadores = nullptr;
     int capacidade = 0;
     int totalAtual = 0;
     int tatica[4]={1,4,4,2};
@@ -34,11 +32,10 @@ struct Plantel {
 
 struct Equipa {
     string nome;
-    Plantel* plantel = nullptr;    // <-- INICIALIZAR A NULLPTR
-    int nJogadores = 0;           // <-- INICIALIZAR A ZERO
-    int pontos = 0;               // <-- INICIALIZAR A ZERO
+    Plantel* plantel = nullptr;
+    int nJogadores = 0;
+    int pontos = 0;
 
-    // --- NOVAS ESTATÍSTICAS PARA A TABELA ---
     int vitorias = 0;
     int empates = 0;
     int derrotas = 0;
@@ -47,7 +44,7 @@ struct Equipa {
 
     int capacidadeLT = 0;
     int totalLT = 0;
-    Jogador* ListaTransf = nullptr; // <-- INICIALIZAR A NULLPT
+    Jogador* ListaTransf = nullptr;
 };
 
 struct Partida {
@@ -58,6 +55,7 @@ struct Partida {
     bool realizada = false;
 };
 
+// FUNCOES NECESSÁRIAS PARA A PRIMEIRA JORNADA E INICIALIZACAO DO PLANTEL
 bool numeroJaExiste(const Plantel& p, int num, int indiceIgnorado = -1);
 int gerarAleatorio(int min, int max);
 string* carregarNomes(string filename, int& totalNomes);

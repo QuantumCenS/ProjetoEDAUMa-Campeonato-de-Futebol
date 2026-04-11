@@ -1,7 +1,3 @@
-//
-// Created by Sergio on 4/3/2026.
-//
-
 #include "jogo.h"
 #include "core.h"
 #include <iostream>
@@ -14,7 +10,13 @@
 using namespace std;
 
 //Por o nome das equipas num array
-//Por o nome das equipas num array E BARALHAR!
+//Por o nome das equipas num array E BARALHAR
+
+/**
+ * carrega a lista de nomes das equipas e baralha as iniciais
+ * @param f nome do ficheiro de texto
+ * @return array (lista) de strings com os nomes das equipas
+ */
 string* carregarEquipas(string f) {
     fstream file(f);
     if (!file.is_open()) return nullptr;
@@ -42,94 +44,65 @@ string* carregarEquipas(string f) {
     }
     file.close();
 
-    // -> A MAGIA ACONTECE AQUI: Chama a tua função de baralhar
-    // antes de devolver o array para o main.cpp!
+    // antes de devolver o array para o main.cpp
     baralhar(equipas, nEquipas);
 
     return equipas;
 }
 
-//Baralha as equipas aleatóriamente dentro do array
+//baralha as equipas aleatóriamente dentro do array
+
+/**
+ * baralha aleatoriamente a ordem dos elementos num array de strings
+ * @param equipas array a baralhar
+ * @param nEquipas tamanho do array
+ */
 void baralhar(string* equipas, int nEquipas ) {
-    // Percorre o array do fim para o início
+    // percorre o array do fim para o início
     for (int i = nEquipas - 1; i > 0; i--) {
-        // Gera um índice aleatório entre 0 e i
+        // gera um índice aleatório entre 0 e i
         int j = gerarAleatorio(0, i);
 
-        // Troca os elementos (Swap)
+        // troca os elementos
         string temp = equipas[i];
         equipas[i] = equipas[j];
         equipas[j] = temp;
     }
 }
 
-//Gerar Jornadas do campeonato
-// string** gerarJornadas( Equipa e, string* equipas) {
-//     int nJornadas =34;
-//     int nEquipas=17; //Se o ficheiro de equipas tiver 50 equipas, substituir este número por 17 ou 18
-//     auto **totalJornadas= new string*[nJornadas];
-//     baralhar(equipas,nEquipas);
-//     for (int i=0;i<nEquipas;i++) {
-//         totalJornadas[i] = new string[2];
-//         totalJornadas[i + nEquipas] = new string[2];
-//         if (i%2==0) {
-//             totalJornadas[i][0]=e.nome;
-//             totalJornadas[i][1]=equipas[i];
-//
-//             totalJornadas[i+nEquipas][0]=equipas[i];
-//             totalJornadas[i+nEquipas][1]=e.nome;
-//         }
-//         else {
-//             totalJornadas[i][0]=equipas[i];
-//             totalJornadas[i][1]=e.nome;
-//
-//             totalJornadas[i+nEquipas][0]=e.nome;
-//             totalJornadas[i+nEquipas][1]=equipas[i];
-//         }
-//     }
-//     return totalJornadas;
-// }
-
+/**
+ * procura uma equipa pelo nome dentro do array da liga
+ * @param nome - nome da equipa a procurar
+ * @param liga - array contendo todas as equipas do campeonato
+ * @param nEquipas - numero total de equipas na liga
+ * @return - referencia para a equipa encontrada ou a primeira equipa
+ */
 Equipa& encontrarEquipa(string nome, Equipa* liga, int nEquipas) {
     for (int i = 0; i < nEquipas; i++) {
         if (liga[i].nome == nome) {
             return liga[i];
         }
     }
-    return liga[0]; // Caso de segurança
-}
-//Gerar o resultado de uma partida e alterar os pontos c:Casa, f:Fora, h:Home, a:Away
-string gerarResultado(Equipa& h, Equipa& a) {
-    int c= gerarAleatorio(0,8);
-    int f= gerarAleatorio(0,8);
-    if (c==f) {
-        h.pontos+=1;
-        a.pontos+=1;
-    }
-    else if (c>f) {
-        h.pontos+=3;
-    }
-    else if (c<f) {
-        a.pontos+=3;
-    }
-    return h.nome +" "+ to_string(c) +" - " + to_string(f) + " " + a.nome;
+    return liga[0]; // caso de segurança
 }
 
-// Reduz 1 jogo de castigo/lesão a quem está de fora
-// Reduz 1 jogo de castigo/lesão a quem está de fora e aplica os treinos!
+/**
+ * atualiza o estado fisico dos jogadores e aplica a progressao de qualidade por treino
+ * @param p - referencia para o plantel a ser atualizado
+ */
 void atualizarRecuperacoes(Plantel& p) {
     for (int i = 0; i < p.totalAtual; i++) {
-        // Recuperação de lesões e castigos
+        // recuperação de lesões e castigos
         if (p.jogadores[i].jogosLesao > 0) p.jogadores[i].jogosLesao--;
         if (p.jogadores[i].jogosCastigo > 0) p.jogadores[i].jogosCastigo--;
 
-        // Aplicação do Treino Específico (Melhorar Qualidade)
-        // Se tem semanas de treino e NÃO está lesionado:
+        // aplicação do treino melhorar qualidade
+        // se tem semanas de treino e NÃO está lesionado:
         if (p.jogadores[i].semanasTreino > 0 && p.jogadores[i].jogosLesao == 0) {
             p.jogadores[i].semanasTreino--;       // Desconta 1 semana
             p.jogadores[i].qualidade += 5;        // Aumenta 5 de qualidade
 
-            // O limite máximo de qualidade é 100
+            // o limite máximo de qualidade é 100
             if (p.jogadores[i].qualidade > 100) {
                 p.jogadores[i].qualidade = 100;
             }
@@ -137,7 +110,14 @@ void atualizarRecuperacoes(Plantel& p) {
     }
 }
 
-// Aplica incidentes da jornada ao plantel real
+// aplica incidentes da jornada ao plantel real
+/**
+ * atribui um tempo de paragem por lesao ou castigo a um jogador especifico no plantel
+ * @param p - referencia para o plantel que contem o jogador
+ * @param numero - numero da camisola do jogador
+ * @param lesao - booleano que indica se o incidente é lesao (true) ou castigo (false)
+ * @param tempo - numero de jogos de paragem a aplicar
+ */
 void aplicarIncidenteAoPlantel(Plantel& p, int numero, bool lesao, int tempo) {
     for (int i = 0; i < p.totalAtual; i++) {
         if (p.jogadores[i].numero == numero) {
@@ -148,13 +128,18 @@ void aplicarIncidenteAoPlantel(Plantel& p, int numero, bool lesao, int tempo) {
     }
 }
 
+/**
+ * simula a ocorrencia de lesoes e castigos durante uma partida e gere as substituicoes
+ * @param t - referencia para a tatica/equipa em campo
+ * @param p - referencia para o plantel global da equipa para persistencia de dados
+ */
 void simularIncidentesPartida(Plantel& t, Plantel& p) {
     cout << "Substituicoes:\n";
     bool houveSubs = false;
-    int substituicoesFeitas = 0; // LIMITADOR DE 3 SUBSTITUIÇÕES
+    int substituicoesFeitas = 0; // limite de 3 substituicoes
 
     for (int i = 11; i < t.totalAtual; i++) {
-        t.jogadores[i].jogouHoje = false; // Suplentes começam no banco
+        t.jogadores[i].jogouHoje = false; // suplentes começam no banco
     }
 
     for (int i = 0; i < 11; i++) {
@@ -178,7 +163,7 @@ void simularIncidentesPartida(Plantel& t, Plantel& p) {
             if (substituicoesFeitas < 3) {
                 int idxSuplente = -1;
 
-                // 1. TENTATIVA: Procurar suplente da MESMA posição
+                // procurar suplente da MESMA posição
                 for (int j = 11; j < t.totalAtual; j++) {
                     if (t.jogadores[j].pos == titular.pos && !t.jogadores[j].jogouHoje) {
                         idxSuplente = j;
@@ -186,7 +171,7 @@ void simularIncidentesPartida(Plantel& t, Plantel& p) {
                     }
                 }
 
-                // 2. TENTATIVA: Se não houver da mesma, procura QUALQUER suplente
+                // se não houver da mesma, procura QUALQUER suplente
                 if (idxSuplente == -1) {
                     for (int j = 11; j < t.totalAtual; j++) {
                         if (!t.jogadores[j].jogouHoje) {
@@ -196,7 +181,7 @@ void simularIncidentesPartida(Plantel& t, Plantel& p) {
                     }
                 }
 
-                // 3. Efetuar substituição
+                // efetua substituição
                 if (idxSuplente != -1) {
                     Jogador& suplente = t.jogadores[idxSuplente];
                     cout << titular.nome << " -> " << suplente.nome << "\n";
@@ -213,6 +198,10 @@ void simularIncidentesPartida(Plantel& t, Plantel& p) {
     if (!houveSubs) cout << "Nenhuma\n";
 }
 
+/**
+ * imprime no ecra as listas separadas de jogadores que se encontram lesionados ou castigados
+ * @param p - referencia constante para o plantel a exibir
+ */
 void exibirCastigadosLesionados(const Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
@@ -276,7 +265,13 @@ void exibirCastigadosLesionados(const Plantel& p) {
     }
 }
 
-
+/**
+ * procura no plantel o jogador apto com maior qualidade para uma determinada posicao
+ * @param p - referencia para o plantel global
+ * @param t - referencia para a tatica (para verificar jogadores ja selecionados)
+ * @param pos - posicao pretendida
+ * @return - objeto Jogador com a maior qualidade encontrada ou erro se nenhum disponivel
+ */
 Jogador encontrarMelhorDisponivel(Plantel& p, Plantel& t, Posicao pos) {
     Jogador melhor;
     melhor.qualidade = -1;
@@ -285,7 +280,7 @@ Jogador encontrarMelhorDisponivel(Plantel& p, Plantel& t, Posicao pos) {
     for (int i = 0; i < p.totalAtual; i++) {
         Jogador candidato = p.jogadores[i];
 
-        // Só escolhe se for da posição, tiver mais qualidade, NÃO estiver convocado e NÃO estiver lesionado/castigado
+        // só escolhe se for da posição, tiver mais qualidade, NÃO estiver convocado e NÃO estiver lesionado/castigado
         if (candidato.pos == pos && candidato.qualidade > melhor.qualidade) {
             if (!p.jogadores[i].jogouHoje && candidato.jogosLesao == 0 && candidato.jogosCastigo == 0) {
                 melhor = candidato;
@@ -294,7 +289,6 @@ Jogador encontrarMelhorDisponivel(Plantel& p, Plantel& t, Posicao pos) {
         }
     }
     if (indiceMelhor != -1) {
-        // 2. MARCAR O JOGADOR COMO "EM USO" PARA NÃO SER CLONADO
         p.jogadores[indiceMelhor].jogouHoje = true;
 
         return p.jogadores[indiceMelhor];
@@ -304,6 +298,12 @@ Jogador encontrarMelhorDisponivel(Plantel& p, Plantel& t, Posicao pos) {
     return erro;
 }
 
+/**
+ * preenche a lista de convocados (titulares e suplentes) com base na tatica definida e jogadores aptos
+ * @param t - referencia para a estrutura de tatica a ser preenchida
+ * @param p - referencia para o plantel de onde os jogadores serao retirados
+ * @return - true se a tatica foi inicializada com sucesso, false se faltarem titulares obrigatorios
+ */
 bool inicializarTatica(Plantel& t, Plantel& p) {
     t.capacidade = 17;
     if (t.jogadores == nullptr) t.jogadores = new Jogador[t.capacidade];
@@ -326,25 +326,21 @@ bool inicializarTatica(Plantel& t, Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
 
-    // ==========================================================
-    // CASO 1: VERIFICAR TITULARES (Obrigatório respeitar posição)
-    // ==========================================================
+    // verifica os titulares
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < titularesNecessarios[i]; j++) {
             Jogador escolhido = encontrarMelhorDisponivel(p, t, posicoes[i]);
             if (escolhido.qualidade != -1) {
                 t.jogadores[t.totalAtual++] = escolhido;
             } else {
-                // FALHOU: O plantel não tem jogadores aptos suficientes para esta posição
+                // FALHOU: o plantel não tem jogadores aptos suficientes para esta posição
                 cout << "\n[ERRO] Nao tem jogadores aptos suficientes na posicao " << posTxt[i]<< " para formar a tatica " << nomeTatica << "!\n";
-                return false; // Retorna falso para obrigar o utilizador a mudar
+                return false; // retorna falso para obrigar o utilizador a mudar
             }
         }
     }
 
-    // ==========================================================
-    // CASO 2: VERIFICAR SUPLENTES (Flexível em caso de falha)
-    // ==========================================================
+    // verifica os suplentes
     int suplentesNecessarios[] = {1, 2, 2, 1};
     int vagasVazias = 0;
 
@@ -360,12 +356,12 @@ bool inicializarTatica(Plantel& t, Plantel& p) {
         }
     }
 
-    // Preencher as vagas vazias no banco com qualquer jogador livre (ignora a posição)
+    // preenche as vagas vazias no banco com qualquer jogador livre (ignora a posição)
     while (vagasVazias > 0 && t.totalAtual < 17) {
         int indiceMelhor = -1;
         int maiorQual = -1;
 
-        // Procura DIRETAMENTE no plantel pelo melhor jogador que ainda não jogou
+        // procura DIRETAMENTE no plantel pelo melhor jogador que ainda não jogou
         for (int i = 0; i < p.totalAtual; i++) {
             if (!p.jogadores[i].jogouHoje && p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
                 if (p.jogadores[i].qualidade > maiorQual) {
@@ -376,7 +372,7 @@ bool inicializarTatica(Plantel& t, Plantel& p) {
         }
 
         if (indiceMelhor != -1) {
-            // Marca o jogador para não ser clonado e adiciona-o à tática
+            // marca o jogador para não ser clonado e adiciona-o à tática
             p.jogadores[indiceMelhor].jogouHoje = true;
             t.jogadores[t.totalAtual++] = p.jogadores[indiceMelhor];
             vagasVazias--;
@@ -385,12 +381,16 @@ bool inicializarTatica(Plantel& t, Plantel& p) {
                  << " (" << posTxt[p.jogadores[indiceMelhor].pos] << ") foi convocado para a vaga.\n";
         } else {
             cout << "[CRITICO] Plantel dizimado! Nao ha mais jogadores disponiveis para sentar no banco.\n";
-            break; // Sai do ciclo se não houver mais ninguém vivo no clube
+            break; // sai do ciclo se não houver mais ninguém vivo no clube
         }
     }
-    return true; // Tática formada com sucesso
+    return true; // tática formada com sucesso
 }
 
+/**
+ * exibe a lista de jogadores titulares (11 inicial) e suplentes convocados para a partida
+ * @param t - referência para o plantel da tática (convocados) a exibir
+ */
 void exibirTatica(const Plantel& t) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
@@ -429,17 +429,28 @@ void exibirTatica(const Plantel& t) {
     }
 }
 
+/**
+ * aloca memória e inicializa a lista de transferências de uma equipa com a capacidade padrão
+ * @param e - referência para a equipa cuja lista de transferências será inicializada
+ */
 void listaTranf(Equipa& e) {
     e.capacidadeLT = 100;
     e.totalLT = 0;
     e.ListaTransf = new Jogador[e.capacidadeLT];                 //array duinamico do tipo jogador
 }
 
+/**
+ * gera novos jogadores aleatórios e adiciona-os à lista de transferências, garantindo números de camisola únicos
+ * @param e - referência para a equipa que gere a lista de transferências
+ * @param p - referência para o plantel (utilizado para validar nomes únicos)
+ * @param listaNomes - array de strings com os nomes base disponíveis
+ * @param totalNomes - tamanho do array de nomes
+ */
 void adicionarJogLT(Equipa& e, const Plantel& p, string* listaNomes, int totalNomes) {
     for (int i = 0; i < 2; i++) {   //  2 jogadores por jornada
 
         if (e.totalLT < e.capacidadeLT) {
-            Jogador& novo = e.ListaTransf[e.totalLT];                              // 2. Criar um atalho para a primeira posição vazia no fim da lista
+            Jogador& novo = e.ListaTransf[e.totalLT];                              // cria um atalho para a primeira posição vazia no fim da lista
 
             preencherAtributosIndependentes(novo, p, listaNomes, totalNomes);
 
@@ -454,13 +465,17 @@ void adicionarJogLT(Equipa& e, const Plantel& p, string* listaNomes, int totalNo
                 }
             }
 
-            novo.numero = maiorNumero + 1;   // O novo jogador recebe o maior número encontrado + 1
+            novo.numero = maiorNumero + 1;   // o novo jogador recebe o maior número encontrado + 1
             e.totalLT++;
         }
     }
     OrdenarPorPos(e.ListaTransf, e.totalLT);
 }
 
+/**
+ * exibe no ecrã o mercado de transferências formatado em tabela
+ * @param e - referência para a equipa que detém a lista de transferências a exibir
+ */
 void exibirListaTransf(const Equipa& e) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
@@ -495,6 +510,12 @@ void exibirListaTransf(const Equipa& e) {
     cout << "****************************************************************************************\n";
 }
 
+/**
+ * valida se um nome já está a ser utilizado por algum jogador no plantel
+ * @param p - referência para o plantel a verificar
+ * @param nome - string com o nome a procurar
+ * @return - true se o nome já existir no plantel, false caso contrário
+ */
 bool nomeJaExisteNoPlantel(const Plantel& p, string nome) {
     for (int i = 0; i < p.totalAtual; i++) {
         if (p.jogadores[i].nome == nome) return true;
@@ -502,7 +523,14 @@ bool nomeJaExisteNoPlantel(const Plantel& p, string nome) {
     return false;
 }
 
-// Numero e Posicao dependem das restricoes do plantel
+// numero e posicao dependem das restricoes do plantel
+/**
+ * preenche um objeto Jogador com atributos aleatórios básicos e um nome único
+ * @param novo - referência para o jogador a ser preenchido
+ * @param p - referência para o plantel (para validação de nome único)
+ * @param listaNomes - array de nomes disponíveis
+ * @param totalNomes - total de nomes no array
+ */
 void preencherAtributosIndependentes(Jogador& novo, const Plantel& p, string* listaNomes, int totalNomes) {
     string nomeSorteado;
     do {
@@ -516,6 +544,11 @@ void preencherAtributosIndependentes(Jogador& novo, const Plantel& p, string* li
     novo.qualidade = gerarAleatorio(0, 100);
 }
 
+/**
+ * ordena um array de jogadores de acordo com a sua posição (GR < DEF < MED < AVA)
+ * @param lista - array de jogadores a ordenar
+ * @param total - número total de jogadores na lista
+ */
 void OrdenarPorPos(Jogador* lista, int total) {
     for (int i = 0; i < total - 1; i++) {
         for (int j = 0; j < total - i - 1; j++) {
@@ -528,7 +561,13 @@ void OrdenarPorPos(Jogador* lista, int total) {
     }
 }
 
-//Conta o numero de jogadores por posicao
+//conta o numero de jogadores por posicao
+/**
+ * calcula a quantidade de jogadores que pertencem a uma posição específica num plantel
+ * @param p - referência para o plantel
+ * @param j - identificador numérico da posição (0-3)
+ * @return - contador total de jogadores na posição indicada
+ */
 int ContarJogNumaPos(Plantel& p, int j){                    // j indica a posição (0=GR, 1=DEF, 2=MED, 3=AVA)
     int contador = 0;
     for (int i = 0; i < p.totalAtual; i++) {
@@ -539,7 +578,13 @@ int ContarJogNumaPos(Plantel& p, int j){                    // j indica a posiç
     return contador;
 }
 
-//Avalia se pode ser contratado para a posicao
+//avalia se pode ser contratado para a posicao
+/**
+ * verifica se a contratação de um jogador para determinada posição é permitida pelos limites do clube
+ * @param p - referência para o plantel
+ * @param j - identificador numérico da posição a validar
+ * @return - true se houver vaga na posição, false se o limite máximo for atingido
+ */
 bool PodeContratarParaPosicao(Plantel& p, int j) {
     int limitesMaximos[] = {3, 10, 10, 7};
     int quantidadeAtual = ContarJogNumaPos(p, j);
@@ -551,6 +596,11 @@ bool PodeContratarParaPosicao(Plantel& p, int j) {
     return true; //ainda ha espaço pra mais jogadores nessa posicao
 }
 
+/**
+ * gere o menu e a lógica de aquisição de jogadores, permitindo compra direta ou troca forçada por excesso de jogadores
+ * @param p - referência para o plantel do utilizador
+ * @param e - referência para a equipa que gere o mercado de transferências
+ */
 void ContratarJogador(Plantel& p, Equipa& e) {
     cout << "\n--- MERCADO DE TRANSFERENCIAS ---\n";
     exibirListaTransf(e);
@@ -565,9 +615,9 @@ void ContratarJogador(Plantel& p, Equipa& e) {
         return;
     }
 
-    if (numTransf == 0) return; // O treinador desistiu de conratar um novo jogador
+    if (numTransf == 0) return; // o treinador desistiu de conratar um novo jogador
 
-    // Procurar o jogador na Lista de Transferências
+    // procura o jogador na Lista de Transferências
     int indiceLT = -1;
     for (int j = 0; j < e.totalLT; j++) {
         if (e.ListaTransf[j].numero == numTransf) {
@@ -581,12 +631,12 @@ void ContratarJogador(Plantel& p, Equipa& e) {
         return;
     }
 
-    //Avaliar os Limites (alteraçao falada com o prof)
+    //avalia os limites (alteraçao falada com o prof)
     int posDesejada = e.ListaTransf[indiceLT].pos;   //guarda posiçao
     bool plantelCheio = (p.totalAtual >= p.capacidade);
     bool posicaoCheia = !PodeContratarParaPosicao(p, posDesejada);
 
-    // Decidir se será compra direta ou troca
+    // decide se será compra direta ou troca
     if (plantelCheio || posicaoCheia) {
         cout << "\n[AVISO] Nao e possivel fazer contratacao direta!\n";
         if (plantelCheio) cout << "- O plantel ja atingiu o limite de 30 jogadores.\n";
@@ -644,17 +694,21 @@ void ContratarJogador(Plantel& p, Equipa& e) {
         cout << "Contratacao direta realizada com sucesso!\n";
     }
 
-    // Organizar plantel e LT
+    // Organiza plantel e LT
     OrdenarPorPos(p.jogadores, p.totalAtual);
     OrdenarPorPos(e.ListaTransf, e.totalLT);
 }
 
 
-
+/**
+ * gere a lógica de contratação automática para clubes controlados pelo computador, permitindo trocas ou compras diretas da lista de transferências
+ * @param p - referência para o plantel da equipa bot
+ * @param e - referência para a estrutura da equipa bot
+ */
 void ContratarJogadorBOT(Plantel& p, Equipa& e) {
     if (e.totalLT == 0) return;
 
-    // Tenta analisar até 3 jogadores da lista por jornada
+    // tenta analisar até 3 jogadores da lista por jornada
     for (int tentativa = 0; tentativa < 3; tentativa++) {
         if (e.totalLT == 0) break;
 
@@ -663,13 +717,13 @@ void ContratarJogadorBOT(Plantel& p, Equipa& e) {
         int nNaPos = ContarJogNumaPos(p, candidato.pos);
         int limitesMaximos[] = {3, 10, 10, 7}; //
 
-        // COMPRA: Se houver vaga real
+        // COMPRA: se houver vaga real
         if (nNaPos < limitesMaximos[candidato.pos] && p.totalAtual < p.capacidade) {
             p.jogadores[p.totalAtual++] = candidato;
             for (int i = idxLT; i < e.totalLT - 1; i++) e.ListaTransf[i] = e.ListaTransf[i + 1];
             e.totalLT--;
         }
-        // TROCA: Se o candidato for MELHOR que o pior do plantel naquela posição
+        // TROCA: se o candidato for MELHOR que o pior do plantel naquela posição
         else {
             int piorIdx = -1;
             int piorQual = candidato.qualidade;
@@ -692,12 +746,20 @@ void ContratarJogadorBOT(Plantel& p, Equipa& e) {
     OrdenarPorPos(e.ListaTransf, e.totalLT);
 }
 
-
+/**
+ * processa as atividades de mercado (vendas, compras e geração de novos jogadores) para todas as equipas da liga em cada jornada
+ * @param liga - array contendo todas as equipas do campeonato
+ * @param nEquipas - número total de equipas
+ * @param bancoNomes - pool de nomes para a geração de novos jogadores
+ * @param nNomes - total de nomes disponíveis no banco
+ * @param idUser - identificador do utilizador humano para evitar automação no seu clube
+ * @param ehGlobal - booleano que define se a simulação é 100% automática
+ */
 void processarMercadoGlobal(Equipa* liga, int nEquipas, string* bancoNomes, int nNomes, int idUser, bool ehGlobal) {
     for (int i = 0; i < nEquipas; i++) {
         adicionarJogLT(liga[i], *liga[i].plantel, bancoNomes, nNomes);
 
-        // Se for Modo Global, TODOS agem. Se for Treinador, apenas os outros clubes (i != idUser)
+        // se for Modo Global, TODOS agem. se for Treinador, apenas os outros clubes (i != idUser)
         if (ehGlobal || i != idUser) {
             ListarJogadorBOT(liga[i]);
             ContratarJogadorBOT(*liga[i].plantel, liga[i]);
@@ -705,6 +767,10 @@ void processarMercadoGlobal(Equipa* liga, int nEquipas, string* bancoNomes, int 
     }
 }
 
+/**
+ * permite que os clubes controlados pelo computador coloquem jogadores excedentários (acima do mínimo por posição) na lista de transferências
+ * @param e - referência para a equipa bot que irá listar jogadores
+ */
 void ListarJogadorBOT(Equipa& e) {
     Plantel& p = *e.plantel;
     int minimos[] = {2, 5, 4, 2}; // GR, DEF, MED, AVA
@@ -735,6 +801,17 @@ void ListarJogadorBOT(Equipa& e) {
     OrdenarPorPos(e.ListaTransf, e.totalLT);
 }
 
+/**
+ * guarda todos os dados atuais do campeonato, incluindo calendário, estatísticas e plantéis, num ficheiro de texto
+ * @param filename - caminho (path) e nome do ficheiro de salvaguarda
+ * @param liga - array de equipas a gravar
+ * @param totalEquipas - número de equipas no campeonato
+ * @param calendario - matriz dinâmica com o calendário de jogos
+ * @param jornadaAtual - índice da jornada em que o campeonato se encontra
+ * @param modoDeJogo - modo atual (Treinador ou Global)
+ * @param idUser - ID da equipa controlada pelo utilizador
+ * @return - true se a gravação for bem sucedida, false caso contrário
+ */
 bool gravarEstadoGlobal(const string& filename, Equipa* liga, int totalEquipas, Partida** calendario, int jornadaAtual, int modoDeJogo, int idUser) {
     ofstream out(filename);
     if (!out.is_open()) return false;
@@ -760,6 +837,17 @@ bool gravarEstadoGlobal(const string& filename, Equipa* liga, int totalEquipas, 
     out.close(); return true;
 }
 
+/**
+ * recupera o estado de um campeonato guardado anteriormente a partir de um ficheiro de texto
+ * @param filename - nome do ficheiro a carregar
+ * @param liga - array de equipas a preencher
+ * @param totalEquipas - número de equipas esperado
+ * @param calendario - matriz do calendário a preencher
+ * @param jornadaAtual - referência para atualizar a jornada atual
+ * @param modoDeJogo - referência para atualizar o modo de jogo
+ * @param idUser - referência para atualizar o ID do utilizador
+ * @return - true se o carregamento for bem sucedido, false caso contrário
+ */
 bool carregarEstadoGlobal(const string& filename, Equipa* liga, int totalEquipas, Partida** calendario, int& jornadaAtual, int& modoDeJogo, int& idUser) {
     ifstream in(filename);
     if (!in.is_open()) return false;
@@ -795,7 +883,11 @@ bool carregarEstadoGlobal(const string& filename, Equipa* liga, int totalEquipas
 }
 
 
-// O novo gerador de calendário (Substitui o gerarJornadas antigo)
+// o novo gerador de calendário (substitui o gerarJornadas antigo)
+/**
+ * cria uma matriz dinâmica que contém o escalonamento de todas as 34 jornadas do campeonato para 18 equipas (todos contra todos)
+ * @return - matriz dinâmica de ponteiros para Partida representando o calendário completo
+ */
 Partida** gerarCalendarioCompleto() {
     int totalJornadas = 34;
     Partida** cal = new Partida*[totalJornadas];
@@ -820,7 +912,14 @@ Partida** gerarCalendarioCompleto() {
     return cal;
 }
 
-// --- SUBSTITUIR A FUNÇÃO simularJornadaCompleta POR ESTA ---
+// SUBSTITUI A FUNCAO simularJornadaCompleta POR ESTA
+/**
+ * executa todos os jogos de uma jornada específica, gera resultados aleatórios e atualiza as estatísticas e incidentes dos bots
+ * @param cal - matriz do calendário do campeonato
+ * @param jornadaAtual - número da jornada a simular
+ * @param liga - array de equipas para atualização de pontos e golos
+ * @param idUserToIgnore - ID do utilizador para saltar a simulação automática de incidentes no seu clube
+ */
 void simularJornadaCompleta(Partida** cal, int jornadaAtual, Equipa* liga, int idUserToIgnore) {
     int idx = jornadaAtual - 1;
     cout << "\n=== RESULTADOS DA JORNADA " << jornadaAtual << " ===\n";
@@ -844,26 +943,15 @@ void simularJornadaCompleta(Partida** cal, int jornadaAtual, Equipa* liga, int i
     }
 }
 
-// --- COLAR ESTAS DUAS FUNÇÕES NOVAS DE SEGUIDA ---
-// Verifica de forma invisível (sem spamar erros no ecrã) se a equipa consegue formar o 11
-bool podeFormarTatica(Plantel& p) {
-    int aptosPos[4] = {0, 0, 0, 0};
-    for (int i = 0; i < p.totalAtual; i++) {
-        if (p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
-            aptosPos[p.jogadores[i].pos]++;
-        }
-    }
-    // Verifica se cumpre os mínimos para a tática default (1 GR, 4 DEF, 4 MED, 2 AVA)
-    if (aptosPos[0] < p.tatica[0] || aptosPos[1] < p.tatica[1] ||
-        aptosPos[2] < p.tatica[2] || aptosPos[3] < p.tatica[3]) {
-        return false;
-    }
-    return true;
-}
 
-// 1. GERA TÁTICA ALEATÓRIA (SÓ PARA BOTS E MODO GLOBAL)
-// GERA TÁTICA ALEATÓRIA SEGURA (Sem ciclos infinitos)
-// 1. TENTA TODAS AS FORMAÇÕES ATÉ ENCONTRAR UMA VÁLIDA
+
+// TENTA TODAS AS FORMAÇÕES ATÉ ENCONTRAR UMA VÁLIDA
+/**
+ * define aleatoriamente uma formação tática válida para um bot com base na disponibilidade atual de jogadores aptos
+ * @param t - referência para a estrutura de tática a preencher
+ * @param p - referência para o plantel de origem
+ * @return - true se encontrar uma formação válida, false se for necessária intervenção de cura
+ */
 bool inicializarTaticaAutomatica(Plantel& t, Plantel& p) {
     int aptos[4] = {0, 0, 0, 0};
     for (int i = 0; i < p.totalAtual; i++) {
@@ -881,7 +969,7 @@ bool inicializarTaticaAutomatica(Plantel& t, Plantel& p) {
     for (int i = 0; i < 9; i++) {
         int idx = gerarAleatorio(0, 8);
         d = formacoes[idx][0]; m = formacoes[idx][1]; a = formacoes[idx][2];
-        // Verifica se o plantel aguenta a tática sorteada + suplentes (2 DEF, 2 MED, 1 AVA)
+        // verifica se o plantel aguenta a tática sorteada + suplentes (2 DEF, 2 MED, 1 AVA)
         if (aptos[1] >= (d + 2) && aptos[2] >= (m + 2) && aptos[3] >= (a + 1)) {
             encontrou = true; break;
         }
@@ -899,14 +987,14 @@ bool inicializarTaticaAutomatica(Plantel& t, Plantel& p) {
     for (int k = 0; k < p.totalAtual; k++) p.jogadores[k].jogouHoje = false;
 
     Posicao posicoes[] = {GR, DEF, MED, AVA};
-    // Preencher Titulares
+    // preencher Titulares
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < t.tatica[i]; j++) {
             Jogador escolhido = encontrarMelhorDisponivel(p, t, posicoes[i]);
             if (escolhido.qualidade != -1) t.jogadores[t.totalAtual++] = escolhido;
         }
     }
-    // Preencher Suplentes (Regra fixa 1-2-2-1)
+    // preencher suplentes (regra fixa 1-2-2-1)
     int suplentesNecessarios[] = {1, 2, 2, 1};
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < suplentesNecessarios[i]; j++) {
@@ -917,7 +1005,11 @@ bool inicializarTaticaAutomatica(Plantel& t, Plantel& p) {
     return true;
 }
 
-// 2. CURA DIRECIONADA: Recupera jogadores apenas se faltarem para os mínimos
+// recupera jogadores apenas se faltarem para os mínimos
+/**
+ * aplica lesões e castigos aleatórios aos jogadores de um bot e força recuperações cirúrgicas se o plantel ficar abaixo dos mínimos funcionais
+ * @param p - referência para o plantel do bot a processar
+ */
 void simularIncidentesBOT(Plantel& p) {
     for (int i = 0; i < p.totalAtual; i++) {
         if (p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
@@ -926,7 +1018,7 @@ void simularIncidentesBOT(Plantel& p) {
         }
     }
 
-    // Mínimos para garantir que pelo menos UMA tática é possível (ex: 5-4-1 ou 3-5-2)
+    // mínimos para garantir que pelo menos UMA tática é possível (ex: 5-4-1 ou 3-5-2)
     int minimos[4] = {2, 5, 4, 2}; // GR, DEF, MED, AVA
     for (int pos = 0; pos < 4; pos++) {
         int contaAptos = 0;
@@ -944,13 +1036,19 @@ void simularIncidentesBOT(Plantel& p) {
                     break;
                 }
             }
-            if (!curouAlguem) break; // Sai se não houver mais ninguém para curar nesta posição
+            if (!curouAlguem) break; // sai se não houver mais ninguém para curar nesta posição
         }
     }
 }
 
 
-// Lógica para ordenar equipas na Tabela
+// lógica para ordenar equipas na Tabela
+/**
+ * função auxiliar para comparar duas equipas visando a ordenação da tabela classificativa
+ * @param a - primeira equipa para comparação
+ * @param b - segunda equipa para comparação
+ * @return - true se a equipa 'a' deve estar acima da 'b' (pontos, DG, GM), false caso contrário
+ */
 bool compararEquipas(const Equipa& a, const Equipa& b) {
     if (a.pontos != b.pontos) return a.pontos > b.pontos;
     int difA = a.golosMarcados - a.golosSofridos;
@@ -959,8 +1057,11 @@ bool compararEquipas(const Equipa& a, const Equipa& b) {
     return a.golosMarcados > b.golosMarcados;
 }
 
-// Mostra a Tabela Classificativa (Sem usar <algorithm>)
-// Mostra a Tabela Classificativa (100% C++)
+/**
+ * ordena as equipas por mérito desportivo e imprime a tabela classificativa formatada no ecrã
+ * @param liga - array de equipas a classificar
+ * @param totalEquipas - número total de equipas na liga
+ */
 void exibirClassificacao(Equipa* liga, int totalEquipas) {
     Equipa** tabela = new Equipa*[totalEquipas];
     for(int i = 0; i < totalEquipas; i++) tabela[i] = &liga[i];
@@ -989,31 +1090,36 @@ void exibirClassificacao(Equipa* liga, int totalEquipas) {
     delete[] tabela;
 }
 
-// Função para preparar todas as equipas da liga para a jornada
+// função para preparar todas as equipas da liga para a jornada
+/**
+ * percorre as equipas da liga para inicializar as suas táticas e preparar os 11 iniciais antes da simulação de uma jornada
+ * @param liga - array de equipas da liga
+ * @param totalEquipas - total de equipas
+ * @param idUserModoTreinador - ID do utilizador para evitar alterar a sua tática manual
+ * @param modoGlobal - booleano que indica se o sistema deve agir em todas as equipas
+ */
 void prepararTaticasJornada(Equipa* liga, int totalEquipas, int idUserModoTreinador, bool modoGlobal) {
     for (int i = 0; i < totalEquipas; i++) {
-        // No Modo Treinador, não queremos que o PC mude a tática do utilizador!
+        // No Modo Treinador, não queremos que o PC mude a tática do utilizador
         if (!modoGlobal && i == idUserModoTreinador) continue;
 
         Plantel& p = *liga[i].plantel;
 
-        // 1. Criar um Plantel temporário para a tática (o "11" daquela jornada)
-        // Nota: No teu projeto, cada equipa devia ter o seu próprio t para evitar fugas de memória.
-        // Se a tática for guardada dentro da Equipa, usamos esse ponteiro.
+        // Criar um Plantel temporário para a tática (o "11" daquela jornada)
+        // Nota: No nosso projeto, cada equipa devia ter o seu próprio t para evitar fugas de memória
+        // Se a tática for guardada dentro da Equipa, usamos esse ponteiro
 
         Plantel t;
         t.jogadores = nullptr;
 
-        // 2. Tentar inicializar a tática automática
-        // Se falhar (retornar false), a função simularIncidentesBOT já trata da cura direcionada
+        // tentar inicializar a tática automática
         if (!inicializarTaticaAutomatica(t, p)) {
-            // Se falhou, curamos os necessários e tentamos de novo uma única vez
+            // se falhou, curamos os necessários e tentamos de novo uma única vez
             simularIncidentesBOT(p);
             inicializarTaticaAutomatica(t, p);
         }
 
-        // 3. Limpeza de memória: Como t foi apenas para teste de viabilidade ou visualização,
-        // num simulador real, os resultados dos golos seriam baseados na qualidade deste t.
+        // Limpeza de memória: Como t foi apenas para teste de viabilidade ou visualização,
         if (t.jogadores != nullptr) delete[] t.jogadores;
     }
 }

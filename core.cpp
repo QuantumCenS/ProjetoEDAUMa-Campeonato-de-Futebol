@@ -1,7 +1,3 @@
-//
-// Created by Sergio on 4/3/2026.
-//
-
 #include "core.h"
 #include <iostream>
 #include <fstream>
@@ -11,11 +7,22 @@
 
 using namespace std;
 
-
+/**
+ * gera um numero aleatorio num intervalo especifico
+ * @param min valor minimo do intervalo
+ * @param max valor maximo do intervalo
+ * @return numero aleatorio gerado
+ */
 int gerarAleatorio(int min, int max) {
     return min + rand() % (max - min + 1);
 }
 
+/**
+ * le uma lista de nomes a partir de um ficheiro de .txt
+ * @param filename caminho (path) para o ficheiro
+ * @param totalNomes referencia para armazenar a contagem total de nomes lidos
+ * @return array de strings com os nomes ou nullptr em caso de erro
+ */
 string* carregarNomes(string filename, int& totalNomes) {
     ifstream file(filename);
     if (!file.is_open()) return nullptr;
@@ -43,11 +50,17 @@ string* carregarNomes(string filename, int& totalNomes) {
 
 
 
-
+/**
+ * verifica se um numero de camisola ja existe no plantel
+ * @param p referencia para o plantel
+ * @param num numero a verificar
+ * @param indiceIgnorado indice do jogador a ignorar na validacao (default -> -1)
+ * @return True se o numero ja existe, False caso contrario
+ */
 bool numeroJaExiste(const Plantel& p, int num, int indiceIgnorado) {
     for (int i = 0; i < p.totalAtual; i++) {
 
-        // Se estivermos a olhar para a posição do próprio jogador que estamos a avaliar, saltamos!
+        // Se estivermos a olhar para a posição do próprio jogador que estamos a avaliar, saltamos
         if (i == indiceIgnorado) {
             continue;
         }
@@ -60,6 +73,12 @@ bool numeroJaExiste(const Plantel& p, int num, int indiceIgnorado) {
     return false; // Percorreu tudo e o número está livre
 }
 
+/**
+ * inicializa um plantel com jogadores aleatorios e posicoes de acordo com as restricoes do enunciado
+ * @param p referencia para o plantel a inicializar
+ * @param listaNomes lista de nomes disponiveis
+ * @param totalNomes numero total de nomes na lista
+ */
 void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
     p.capacidade = 30;
     p.jogadores = new Jogador[p.capacidade];
@@ -106,6 +125,10 @@ void inicializarPlantel(Plantel& p, string* listaNomes, int totalNomes) {
     }
 }
 
+/**
+ * exibe as informacoes detalhadas de todos os jogadores do plantel
+ * @param p referencia constante para o plantel
+ */
 void exibirPlantel(const Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
 
@@ -145,6 +168,11 @@ void exibirPlantel(const Plantel& p) {
     cout << "=======================================================================================================\n";
 }
 
+/**
+ * liberta a memoria dinamica alocada para o plantel
+ * @param p referencia para o plantel
+ * @param listaNomes array de strings a libertar
+ */
 void libertarMemoria(Plantel& p, string* listaNomes) {
     delete[] p.jogadores;
 }

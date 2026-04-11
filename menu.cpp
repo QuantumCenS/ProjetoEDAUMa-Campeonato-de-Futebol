@@ -8,6 +8,11 @@
 
 using namespace std;
 
+/**
+ * gere a interface do menu para visualizar e modificar os tempos de paragem por lesao ou castigo.
+ * permite ao utilizador pesquisar um jogador pelo numero e ajustar manualmente o seu estado de disponibilidade
+ * @param p - referencia para o plantel onde as alteracoes de saude/disciplina serao aplicadas.
+ */
 void gerirLesionadosECastigados(Plantel& p) {
     int opcao = -1;
     while (opcao != 0) {
@@ -74,6 +79,12 @@ void gerirLesionadosECastigados(Plantel& p) {
     }
 }
 
+/**
+ * apresenta o menu de definicao de tatica manual para o utilizador
+ * valida se o numero de jogadores por posicao cumpre os requisitos minimos e se o plantel tem jogadores aptos suficientes
+ * @param t - referencia para a estrutura de tatica (convocados) a ser preenchida.
+ * @param p - referencia para o plantel total de onde os jogadores serao selecionados.
+ */
 void menuTatica(Plantel& t, Plantel& p) {
     int aptosTotal = 0;
     for (int i = 0; i < p.totalAtual; i++) {
@@ -114,6 +125,11 @@ void menuTatica(Plantel& t, Plantel& p) {
     }
 }
 
+/**
+ * gere a operacao de treino para alterar a posicao principal de um jogador no plantel.
+ * verifica a viabilidade da mudanca com base nos limites maximos permitidos para cada posicao.
+ * @param p - referencia para o plantel que contem o jogador a ser treinado.
+ */
 void menuOperacoesMudarPos(Plantel& p) {
     cout << "\n--- TREINO: MUDAR POSICAO ---\n";
     cout << "Numero do jogador (0 para cancelar): ";
@@ -139,6 +155,11 @@ void menuOperacoesMudarPos(Plantel& p) {
     }
 }
 
+/**
+ * permite ao utilizador agendar semanas de treino especifico para um jogador melhorar a sua qualidade.
+ * bloqueia a aplicacao de treino a jogadores que se encontrem atualmente lesionados.
+ * @param p - referencia para o plantel onde o tempo de treino sera registado.
+ */
 void menuOperacoesMelhorarQual(Plantel& p) {
     cout << "\n--- TREINO: MELHORAR QUALIDADE ---\n";
     cout << "Numero do jogador (0 para cancelar): ";
@@ -162,11 +183,17 @@ void menuOperacoesMelhorarQual(Plantel& p) {
     }
 }
 
+/**
+ * gere a interface para a realizacao de substituicoes manuais entre a tatica convocada e os jogadores aptos no banco/plantel.
+ * garante que os jogadores que entram nao estao lesionados, castigados ou ja a jogar na tatica atual.
+ * @param t - referencia para a tatica ativa (11 inicial e banco) onde a substituicao sera efetuada.
+ * @param p - referencia constante para o plantel global para consulta de jogadores disponiveis.
+ */
 void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
     cout << "\n--- ALTERACOES MANUAIS NO 11 INICIAL E BANCO ---\n";
 
-    // Mostrar jogadores do Plantel que NÃO estão na tática e estão aptos
+    // mostra jogadores do Plantel que NÃO estão na tática e estão aptos
     cout << "\nDisponiveis no Plantel (Nao Convocados):\n";
     cout << left << setw(4) << "Nº" << " | "
          << setw(7) << "Posicao" << " | "
@@ -176,10 +203,8 @@ void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
 
     bool haAptos = false;
     for (int i = 0; i < p.totalAtual; i++) {
-        // CORREÇÃO: Usar a flag nativa do teu projeto (jogouHoje) em vez da função antiga
         if (!p.jogadores[i].jogouHoje && p.jogadores[i].jogosLesao == 0 && p.jogadores[i].jogosCastigo == 0) {
 
-            // CORREÇÃO: Substituição do printf pelo cout com setw()
             cout << left << setw(4) << p.jogadores[i].numero << " | "
                  << setw(7) << posTxt[p.jogadores[i].pos] << " | "
                  << setw(4) << p.jogadores[i].qualidade << " | "
@@ -213,16 +238,22 @@ void menuAlteracoesPlantel(Plantel& t, const Plantel& p) {
         cout << "[ERRO] O jogador selecionado ja esta convocado na tatica atual!\n"; return;
     }
 
-    // Fazemos a substituição diretamente na Tática
+    // fazemos a substituição diretamente na Tática
     string nomeSair = t.jogadores[idxSair].nome;
     t.jogadores[idxSair] = p.jogadores[idxEntrar];
 
-    // Atualizar as flags para a nova tática
+    // atualiza as flags para a nova tática
     t.jogadores[idxSair].jogouHoje = true;
 
     cout << "\n[SUCESSO] O jogador " << p.jogadores[idxEntrar].nome << " entrou no lugar de " << nomeSair << " para esta partida!\n";
 }
 
+/**
+ * apresenta e gere o sub-menu dedicado às operações de mercado.
+ * permite ao utilizador alternar entre a visualização da lista de transferências e a execução de contratações ou trocas.
+ * @param p - referência para o plantel do utilizador onde serão inseridos os novos jogadores.
+ * @param e - referência para a equipa do utilizador que contém a lista de transferências ativa.
+ */
 void menuOperacoesTransferencias(Plantel& p, Equipa& e) {
     int op = -1;
     while (op != 0) {
@@ -240,6 +271,17 @@ void menuOperacoesTransferencias(Plantel& p, Equipa& e) {
     }
 }
 
+/**
+ * centraliza as operações de gestão interna da equipa e do estado do jogo.
+ * inclui acesso ao mercado, treinos específicos, gestão médica e a funcionalidade de gravação do progresso global.
+ * @param liga - array contendo todas as equipas do campeonato.
+ * @param totalEquipas - número total de equipas na liga.
+ * @param calendario - matriz dinâmica com o agendamento de todos os jogos.
+ * @param modoDeJogo - referência para o modo atual (Treinador ou Global).
+ * @param idUser - referência para o identificador da equipa do utilizador.
+ * @param jornadaAtual - referência para o contador da jornada em curso.
+ * @param t - referência para a tática ativa para validação de alterações.
+ */
 void menuOperacoesGestao(Equipa* liga, int totalEquipas, Partida** calendario, int& modoDeJogo, int& idUser, int& jornadaAtual, Plantel& t) {
     Plantel& p = *liga[idUser].plantel;
     Equipa& e = liga[idUser];
@@ -280,7 +322,19 @@ void menuOperacoesGestao(Equipa* liga, int totalEquipas, Partida** calendario, i
     } while (opcaoGestao != 0);
 }
 
-// O NOVO MENU PRINCIPAL
+/**
+ * motor principal do simulador que gere o fluxo completo do campeonato.
+ * controla o carregamento de ficheiros, a seleção inicial de modos, e o ciclo de vida das 34 jornadas,
+ * diferenciando a lógica entre o Modo Treinador (interativo) e o Modo Global (autónomo).
+ * @param liga - array com a estrutura de dados de todas as equipas.
+ * @param totalEquipas - número total de equipas participantes.
+ * @param p - referência para o plantel base do utilizador.
+ * @param t - referência para a estrutura de tática ativa do utilizador.
+ * @param calendario - estrutura de dados com o calendário completo de jogos.
+ * @param listaNomes - pool de nomes para a geração dinâmica de jogadores no mercado.
+ * @param totalNomes - total de nomes disponíveis no banco de dados.
+ * @param ficheiroLoad - nome do ficheiro para carregamento de estado anterior (string vazia para novo jogo).
+ */
 void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Partida** calendario, string* listaNomes, int totalNomes, string ficheiroLoad) {
     int modoDeJogo = 0; // 1 = Treinador, 2 = Global
     int idUser = -1;
@@ -332,9 +386,7 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
             break;
         }
 
-        // ============================================
         // MODO TREINADOR
-        // ============================================
         if (modoDeJogo == 1) {
             Equipa& minhaEquipa = liga[idUser];
             Plantel& meuPlantel = *minhaEquipa.plantel;
@@ -344,10 +396,8 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
             exibirPlantel(meuPlantel);
             exibirCastigadosLesionados(meuPlantel);
 
-            // ADICIONA ESTA LINHA AQUI:
             exibirListaTransf(minhaEquipa);
 
-            // Menu Limpo!
             cout << "\n(s)eguinte (a)lteracoes (o)coes (c)lassificacao (q)sair: ";
             char opcao; cin >> opcao;
             cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpa o buffer
@@ -367,16 +417,13 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
             }
             else if (opcao == 'a' || opcao == 'A') menuAlteracoesPlantel(t, meuPlantel);
 
-            // CHAMADA ATUALIZADA (com t, modoDeJogo e idUser passados como ref)
             else if (opcao == 'o' || opcao == 'O') menuOperacoesGestao(liga, totalEquipas, calendario, modoDeJogo, idUser, jornadaAtual, t);
 
             else if (opcao == 'c' || opcao == 'C') exibirClassificacao(liga, totalEquipas);
             else if (opcao == 'q' || opcao == 'Q') campeonatoAtivo = false;
         }
 
-        // ============================================
         // MODO SIMULAÇÃO GLOBAL
-        // ============================================
         else {
             cout << "\n--- SIMULACAO GLOBAL: JORNADA " << jornadaAtual << " ---\n";
             exibirClassificacao(liga, totalEquipas);
@@ -387,10 +434,10 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
 
             if (op == 's' || op == 'S') {
                 bool ehGlobal = (modoDeJogo == 2);
-                // 1. Prepara as táticas aleatórias para todos
+                // prepara as táticas aleatórias para todos
                 prepararTaticasJornada(liga, totalEquipas, idUser, ehGlobal);
 
-                // 2. Simular os jogos (APENAS UMA VEZ)
+                // simula os jogos (APENAS UMA VEZ)
                 simularJornadaCompleta(calendario, jornadaAtual, liga, idUser);
 
                 for (int i = 0; i < totalEquipas; i++) atualizarRecuperacoes(*liga[i].plantel);
@@ -409,7 +456,7 @@ void menuPrincipal(Equipa* liga, int totalEquipas, Plantel& p, Plantel& t, Parti
                     Plantel taticaTemp;
                     taticaTemp.jogadores = nullptr;
 
-                    // CORREÇÃO: Copiar a tática que o BOT realmente escolheu
+                    // copia a tática que o BOT realmente escolheu
                     for(int k = 0; k < 4; k++) {
                         taticaTemp.tatica[k] = liga[idInsp].plantel->tatica[k];
                     }

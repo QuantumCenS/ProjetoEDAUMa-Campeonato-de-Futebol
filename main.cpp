@@ -7,9 +7,20 @@
 
 using namespace std;
 
+/**
+ * Ponto de entrada principal do simulador de campeonato de futebol
+ * Esta função configura o ambiente de execução (UTF-8 e semente aleatória), carrega os dados base de equipas e nomes,
+ * inicializa os plantéis e táticas de todas as equipas da liga, gera o calendário completo de 34 jornadas
+ * e invoca o menu principal para a interação com o utilizador. No final da execução, garante a libertação
+ * rigorosa de toda a memória dinâmica alocada (equipas, plantéis, jogadores e calendário).
+ *
+ * @param argc - contador de argumentos passados através da linha de comandos.
+ * @param argv - vetor de strings contendo os argumentos da linha de comandos (ex: nome de um ficheiro para carregamento imediato).
+ * @return - inteiro indicando o estado de terminação do programa (0 para sucesso, 1 em caso de erro crítico no carregamento).
+ */
 int main(int argc, char* argv[]) {
     setbuf(stdout, NULL);
-    // Isto resolve os nomes estranhos como "Nicol├¡s", forçando o Windows a usar UTF-8!
+    // Isto resolve os nomes estranhos como "Nicol├¡s", forçando o Windows a usar UTF-8
     system("chcp 65001 > nul");
     srand(time(NULL));
 
@@ -54,17 +65,15 @@ int main(int argc, char* argv[]) {
         listaTranf(liga[i]);
     }
 
-    // --- CORREÇÃO AQUI: Novo sistema de Calendário Global ---
+    // Novo sistema de Calendário Global
     Partida** calendario = gerarCalendarioCompleto();
     int totalJornadas = 34;
     listaTranf(liga[0]);
 
-    // Executa o Menu
+    // executa o Menu
     menuPrincipal(liga, TOTAL_EQUIPAS, *meuTime, *meuTime2, calendario, bancoDeNomes, totalNomesDisponiveis, ficheiroLoad);
 
-    // =========================================================================
     // LIMPEZA DE MEMÓRIA DINÂMICA
-    // =========================================================================
     for (int i = 0; i < totalJornadas; i++) {
         delete[] calendario[i];
     }
