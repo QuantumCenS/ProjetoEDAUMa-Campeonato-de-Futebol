@@ -258,7 +258,9 @@ void menuOperacoesMudarPos(Plantel& p) {
     }
 
     const char* posTxt[] = {"GR", "DEF", "MED", "AVA"};
-    cout << "O jogador " << p.jogadores[idx].nome << " joga atualmente a " << posTxt[p.jogadores[idx].pos] << ".\n";
+    Posicao posAtual = p.jogadores[idx].pos;
+    
+    cout << "O jogador " << p.jogadores[idx].nome << " joga atualmente a " << posTxt[posAtual] << ".\n";
     cout << "Para qual posicao o quer treinar? (0: GR, 1: DEF, 2: MED, 3: AVA): ";
     int novaPos;
     cin >> novaPos;
@@ -270,17 +272,31 @@ void menuOperacoesMudarPos(Plantel& p) {
         return;
     }
 
-    if (p.jogadores[idx].pos == novaPos) {
+    if (posAtual == novaPos) {
         cout << "[AVISO] O jogador ja atua nessa posicao.\n";
         return;
     }
 
-    // A nossa função de transferências já faz o cálculo se há espaço! Reutilizamos aqui:
+    // A ÚNICA COISA NOVA ESTÁ AQUI: Impede que o plantel fique sem jogadores suficientes na posição antiga!
+    int qtdAtual = ContarJogNumaPos(p, posAtual);
+    bool podeSair = true;
+    
+    if (posAtual == GR && qtdAtual <= 2) podeSair = false;
+    if (posAtual == DEF && qtdAtual <= 7) podeSair = false;
+    if (posAtual == MED && qtdAtual <= 7) podeSair = false;
+    if (posAtual == AVA && qtdAtual <= 4) podeSair = false;
+
+    if (!podeSair) {
+        cout << "[ERRO] Treino cancelado! O plantel atingiria um numero critico de jogadores na posicao de " << posTxt[posAtual] << ".\n";
+        return;
+    }
+
+    // Verifica se a NOVA posição tem espaço (Isto já tu tinhas feito!)
     if (PodeContratarParaPosicao(p, novaPos)) {
         p.jogadores[idx].pos = static_cast<Posicao>(novaPos);
         cout << "[SUCESSO] " << p.jogadores[idx].nome << " atua agora a " << posTxt[novaPos] << "!\n";
 
-        // Reorganiza o plantel após a mudança
+        // Organiza a lista para ficar bonito
         OrdenarPorPos(p.jogadores, p.totalAtual);
     } else {
         cout << "[ERRO] Treino cancelado! Ja atingiu o limite maximo de jogadores para a posicao " << posTxt[novaPos] << ".\n";
