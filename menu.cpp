@@ -277,7 +277,7 @@ void menuOperacoesMudarPos(Plantel& p) {
         return;
     }
 
-    // A ÚNICA COISA NOVA ESTÁ AQUI: Impede que o plantel fique sem jogadores suficientes na posição antiga!
+    // A ÚNICA COISA NOVA ESTÁ AQUI: IMPEDE QUE O PLANTEL FIQUE SEM O Nº DE JOGADORES MÍNIMO NECESSÁRIO NA POSIÇÃO ORIGINAL. <--------------------------------------------
     int qtdAtual = ContarJogNumaPos(p, posAtual);
     bool podeSair = true;
     
@@ -291,12 +291,12 @@ void menuOperacoesMudarPos(Plantel& p) {
         return;
     }
 
-    // Verifica se a NOVA posição tem espaço (Isto já tu tinhas feito!)
+    // Verifica se a NOVA posição tem espaço 
     if (PodeContratarParaPosicao(p, novaPos)) {
         p.jogadores[idx].pos = static_cast<Posicao>(novaPos);
         cout << "[SUCESSO] " << p.jogadores[idx].nome << " atua agora a " << posTxt[novaPos] << "!\n";
 
-        // Organiza a lista para ficar bonito
+        // Organiza a lista
         OrdenarPorPos(p.jogadores, p.totalAtual);
     } else {
         cout << "[ERRO] Treino cancelado! Ja atingiu o limite maximo de jogadores para a posicao " << posTxt[novaPos] << ".\n";
